@@ -13,13 +13,13 @@ import java.io.Serializable;
  * @author 0.0.0
  */
 @Data
-public class Search implements Serializable {
+public class Param implements Serializable {
 
-    public Search() {
+    public Param() {
 
     }
 
-    public Search(String field, Object value) {
+    public Param(String field, Object value) {
         this.field = field;
         this.value = value;
     }
@@ -40,8 +40,4 @@ public class Search implements Serializable {
      * 日期格式
      */
     private String formatDate;
-    /**
-     * 排序方式
-     */
-    private String sort;
 }

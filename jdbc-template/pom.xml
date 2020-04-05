@@ -7,32 +7,21 @@
         <artifactId>framework</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>core</artifactId>
+    <artifactId>jdbc-template</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>core</name>
-    <description>核心类</description>
+    <name>jdbc-template</name>
+    <description>jdbc-template数据库操作模块</description>
 
     <dependencies>
-        <!-- 类构建反射reflectasm -->
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>reflectasm</artifactId>
-        </dependency>
         <!--jpa-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <!--guava-->
+        <!-- core -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <!--    fastJson    -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
+            <groupId>github.com.ice-zero-cat</groupId>
+            <artifactId>core</artifactId>
         </dependency>
     </dependencies>
 

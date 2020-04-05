@@ -34,11 +34,15 @@
             <groupId>github.com.ice-zero-cat</groupId>
             <artifactId>core</artifactId>
         </dependency>
-
         <!--jpa模块-->
         <dependency>
             <groupId>github.com.ice-zero-cat</groupId>
             <artifactId>jpa</artifactId>
+        </dependency>
+        <!--jdbcTemplate封装-->
+        <dependency>
+            <groupId>github.com.ice-zero-cat</groupId>
+            <artifactId>jdbc-template</artifactId>
         </dependency>
     </dependencies>
 

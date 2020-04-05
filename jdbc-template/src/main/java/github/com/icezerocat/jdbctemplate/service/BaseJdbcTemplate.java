@@ -1,7 +1,7 @@
-package github.com.icezerocat.admin.jdbctemplate.service;
+package github.com.icezerocat.jdbctemplate.service;
 
 import com.sun.istack.NotNull;
-import github.com.icezerocat.core.model.Search;
+import github.com.icezerocat.core.model.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcOperations;
 
@@ -16,6 +16,7 @@ import java.util.List;
  * @author 0.0.0
  * @version 1.0
  */
+@SuppressWarnings("all")
 public interface BaseJdbcTemplate extends JdbcOperations {
 
     /**
@@ -102,7 +103,7 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @param tClass     实体类
      * @return 总数
      */
-    long count(List<Search> searchList, Class<?> tClass);
+    long count(List<Param> searchList, Class<?> tClass);
 
     /**
      * 获取数据库对象数据
@@ -112,5 +113,5 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @param pageable    排序分页
      * @return list分页数据
      */
-    <T> List<T> getList(List<Search> searchList, Class<T> entityClass, Pageable pageable);
+    <T> List<T> getList(List<Param> searchList, Class<T> entityClass, Pageable pageable);
 }

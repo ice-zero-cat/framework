@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author 0.0.0
  */
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ("github.com.icezerocat"))
 public class AdminApplication {
 
     public static void main(String[] args) {

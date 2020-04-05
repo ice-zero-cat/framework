@@ -34,7 +34,7 @@
     <!--自定义开发类-->
     <logger name="github.com.icezerocat.admin" level="DEBUG"/>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>

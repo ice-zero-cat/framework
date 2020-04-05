@@ -1,10 +1,11 @@
-package github.com.icezerocat.admin.jdbctemplate.service.impl;
+package github.com.icezerocat.jdbctemplate.service.impl;
 
 import com.sun.istack.NotNull;
-import github.com.icezerocat.admin.jdbctemplate.service.BaseJdbcTemplate;
 import github.com.icezerocat.core.builder.SearchBuild;
-import github.com.icezerocat.core.model.Search;
+import github.com.icezerocat.core.model.Param;
 import github.com.icezerocat.core.utils.DaoUtil;
+import github.com.icezerocat.jdbctemplate.service.BaseJdbcTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ import java.util.List;
  * @author 0.0.0
  * @version 1.0
  */
+@Slf4j
 @Component
 public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTemplate {
     public BaseJdbcTemplateImpl(DataSource dataSource) {
@@ -38,24 +40,22 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
 
     @Override
     public long delete(Class<?> tClass, Iterable<Long> ids) {
-        StringBuilder stringBuilder = new StringBuilder();
-        ids.forEach(id -> stringBuilder.append(id).append(","));
-        String id = stringBuilder.substring(0, stringBuilder.length());
-        String sql = "delete from " + DaoUtil.getTableName(tClass) + " where id in (?)";
+        String id = String.valueOf(ids);
+        id = id.substring(1, id.length() - 1);
+        String sql = "delete from " + DaoUtil.getTableName(tClass) + " where id in (" + id + ")";
         return this.update(sql, id);
     }
 
     @Override
     public <T> T findById(Class<T> tClass, @NotNull Long id) {
-        return this.queryForObject("select * from " + DaoUtil.getTableName(tClass) + " where id = " + id, tClass);
+        return this.queryForObject("select * from " + DaoUtil.getTableName(tClass) + " where id = " + id, new BeanPropertyRowMapper<>(tClass));
     }
 
     @Override
     public <T> List<T> findById(Class<T> tClass, Iterable<Long> ids) {
-        StringBuilder stringBuilder = new StringBuilder();
-        ids.forEach(id -> stringBuilder.append(id).append(","));
-        String id = stringBuilder.substring(0, stringBuilder.length());
-        return this.query("select * from " + DaoUtil.getTableName(tClass) + " where id in (?)", new Object[]{id}, new BeanPropertyRowMapper<>(tClass));
+        String id = String.valueOf(ids);
+        id = id.substring(1, id.length() - 1);
+        return this.query("select * from " + DaoUtil.getTableName(tClass) + " where id in (" + id + ")", new BeanPropertyRowMapper<>(tClass));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
     }
 
     @Override
-    public long count(List<Search> searchList, Class<?> entityClass) {
+    public long count(List<Param> searchList, Class<?> entityClass) {
         SearchBuild searchBuild = new SearchBuild.Builder(DaoUtil.getTableName(entityClass)).searchList(searchList).start();
         String sql = " select count(*) " + searchBuild.getHql();
         Long count = this.queryForObject(sql, searchBuild.getList(), Long.class);
@@ -88,7 +88,7 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
     }
 
     @Override
-    public <T> List<T> getList(List<Search> searchList, Class<T> entityClass, Pageable pageable) {
+    public <T> List<T> getList(List<Param> searchList, Class<T> entityClass, Pageable pageable) {
         SearchBuild searchBuild = new SearchBuild.Builder(DaoUtil.getTableName(entityClass)).searchList(searchList).start();
         String sql = "SELECT * " + searchBuild.getHql();
         return executePageable(sql, searchBuild.getList(), entityClass, pageable);
@@ -108,7 +108,8 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
         StringBuilder sqlBuild = new StringBuilder(sqlStr);
 
         //是否有select，没有则添加
-        if (!sqlStr.trim().toUpperCase().startsWith("SELECT")) {
+        final String select = "SELECT";
+        if (!sqlStr.trim().toUpperCase().startsWith(select)) {
             sqlBuild.insert(0, " SELECT ");
         }
 

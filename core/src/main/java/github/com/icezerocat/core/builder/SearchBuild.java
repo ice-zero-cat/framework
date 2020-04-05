@@ -1,6 +1,6 @@
 package github.com.icezerocat.core.builder;
 
-import github.com.icezerocat.core.model.Search;
+import github.com.icezerocat.core.model.Param;
 import github.com.icezerocat.core.utils.DaoUtil;
 import github.com.icezerocat.core.utils.DateUtil;
 import org.springframework.util.StringUtils;
@@ -83,8 +83,8 @@ public class SearchBuild {
          * @param searchList 搜索条件
          * @return 更新builder
          */
-        public Builder searchList(List<Search> searchList) {
-            for (Search search : searchList) {
+        public Builder searchList(List<Param> searchList) {
+            for (Param search : searchList) {
                 //过滤value为空的查询条件，判断type是否为null类型的不拦截
                 if (SearchBuild.IS_NULL.equals(search.getType()) || SearchBuild.IS_NOT_NULL.equals(search.getType())
                         || !StringUtils.isEmpty(search.getValue())) {
@@ -97,46 +97,46 @@ public class SearchBuild {
             return this;
         }
 
-        public Builder and(Search search) {
+        public Builder and(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" = ").append("'").append(search.getValue()).append("'");
             return this;
         }
 
-        public Builder or(Search search) {
+        public Builder or(Param search) {
             this.hql.append(" or ").append(search.getField()).append(" = ").append("'").append(search.getValue()).append("'");
             return this;
         }
 
-        public Builder isNotEqual(Search search) {
+        public Builder isNotEqual(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" != ").append("'").append(search.getValue()).append("'");
             return this;
         }
 
-        public Builder orIsNotEqual(Search search) {
+        public Builder orIsNotEqual(Param search) {
             this.hql.append(" or ").append(search.getField()).append(" != ").append("'").append(search.getValue()).append("'");
             return this;
         }
 
-        public Builder andLike(Search search) {
+        public Builder andLike(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" like").append(" '%").append(search.getValue()).append("%'");
             return this;
         }
 
-        public Builder orLike(Search search) {
+        public Builder orLike(Param search) {
             this.hql.append(" or ").append(search.getField()).append(" like").append(" '%").append(search.getValue()).append("%'");
             return this;
         }
 
-        public Builder like(Search search) {
+        public Builder like(Param search) {
             this.andLike(search);
             return this;
         }
 
-        public Builder day(Search search) {
+        public Builder day(Param search) {
             return this.andDay(search);
         }
 
-        public Builder andDay(Search search) {
+        public Builder andDay(Param search) {
             Date leftDate = formatDate(search);
             Calendar rightDate = Calendar.getInstance();
             rightDate.setTime(leftDate);
@@ -149,7 +149,7 @@ public class SearchBuild {
             return this;
         }
 
-        public Builder orDay(Search search) {
+        public Builder orDay(Param search) {
             Date leftDate = formatDate(search);
             Calendar rightDate = Calendar.getInstance();
             rightDate.setTime(leftDate);
@@ -163,21 +163,21 @@ public class SearchBuild {
         }
 
 
-        public Builder startTime(Search search) {
+        public Builder startTime(Param search) {
             Date startDate = formatDate(search);
             this.hql.append(" and ").append(search.getField()).append(" >= ").append(" ?");
             this.list.add(startDate);
             return this;
         }
 
-        public Builder orStartTime(Search search) {
+        public Builder orStartTime(Param search) {
             Date startDate = formatDate(search);
             this.hql.append(" or ").append(search.getField()).append(" >= ").append(" ?");
             this.list.add(startDate);
             return this;
         }
 
-        public Builder endTime(Search search) {
+        public Builder endTime(Param search) {
             Date endDate = formatDate(search);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(endDate);
@@ -187,7 +187,7 @@ public class SearchBuild {
             return this;
         }
 
-        public Builder month(Search search) {
+        public Builder month(Param search) {
             String yearMonth = (String) search.getValue();
             String[] strings = yearMonth.split("-");
             this.list.add(DateUtil.getFirstDayOfMonth(Integer.valueOf(strings[0]), Integer.valueOf(strings[1])));
@@ -196,12 +196,12 @@ public class SearchBuild {
             return this;
         }
 
-        public Builder andMonth(Search search) {
+        public Builder andMonth(Param search) {
             this.month(search);
             return this;
         }
 
-        public Builder orMonth(Search search) {
+        public Builder orMonth(Param search) {
             String yearMonth = (String) search.getValue();
             String[] strings = yearMonth.split("-");
             this.list.add(DateUtil.getFirstDayOfMonth(Integer.valueOf(strings[0]), Integer.valueOf(strings[1])));
@@ -210,32 +210,32 @@ public class SearchBuild {
             return this;
         }
 
-        public Builder greater(Search search) {
+        public Builder greater(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" < ").append(search.getValue());
             return this;
         }
 
-        public Builder orGreater(Search search) {
+        public Builder orGreater(Param search) {
             this.hql.append(" or ").append(search.getField()).append(" < ").append(search.getValue());
             return this;
         }
 
-        public Builder lest(Search search) {
+        public Builder lest(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" > ").append(search.getValue());
             return this;
         }
 
-        public Builder orLest(Search search) {
+        public Builder orLest(Param search) {
             this.hql.append(" or ").append(search.getField()).append(" > ").append(search.getValue());
             return this;
         }
 
-        public Builder isNull(Search search) {
+        public Builder isNull(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" IS NULL ");
             return this;
         }
 
-        public Builder isNotNull(Search search) {
+        public Builder isNotNull(Param search) {
             this.hql.append(" and ").append(search.getField()).append(" IS NOT NULL ");
             return this;
         }
@@ -244,7 +244,7 @@ public class SearchBuild {
             return new SearchBuild(this);
         }
 
-        public Date formatDate(Search search) {
+        public Date formatDate(Param search) {
             String formatDate = search.getFormatDate() != null && !StringUtils.isEmpty(StringUtils.trimWhitespace(search.getFormatDate())) ? search.getFormatDate() : "yyyy-MM-dd";
             return DateUtil.parseDate(String.valueOf(search.getValue()), formatDate);
         }
