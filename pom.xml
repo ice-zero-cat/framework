@@ -19,6 +19,7 @@
         <module>jpa</module>
         <module>core</module>
         <module>jdbc-template</module>
+        <module>backup</module>
     </modules>
 
     <!--版本号管理-->

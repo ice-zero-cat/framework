@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "backup.datasource.host",
+      "type": "java.lang.String",
+      "description": "Description for backup.datasource.host."
+    }
+  ]
+}
