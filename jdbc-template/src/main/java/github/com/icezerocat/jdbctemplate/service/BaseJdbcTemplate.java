@@ -64,6 +64,7 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @param objects     查询条件参数
      * @param entityClass 对象类
      * @param pageable    分页数据
+     * @param <T>         泛型
      * @return list分页对象数据
      */
     <T> List<T> findAll(String sqlStr, Object[] objects, Class<T> entityClass, Pageable pageable);
@@ -111,6 +112,7 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @param searchList  查询条件
      * @param entityClass 对象类
      * @param pageable    排序分页
+     * @param <T>         泛型
      * @return list分页数据
      */
     <T> List<T> getList(List<Param> searchList, Class<T> entityClass, Pageable pageable);

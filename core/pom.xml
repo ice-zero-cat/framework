@@ -5,10 +5,10 @@
     <parent>
         <groupId>github.com.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>core</name>
     <description>核心类</description>
 

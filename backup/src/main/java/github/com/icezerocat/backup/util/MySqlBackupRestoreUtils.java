@@ -6,6 +6,7 @@ import java.util.Objects;
 
 /**
  * MySQL备份还原工具类
+ *
  * @author 0.0.0
  */
 @SuppressWarnings("unused")
@@ -63,8 +64,7 @@ public class MySqlBackupRestoreUtils {
      * @param password        密码
      * @return 备份结果
      */
-    public static boolean restore(String restoreFilePath, String host, String userName, String password, String database)
-            throws Exception {
+    public static boolean restore(String restoreFilePath, String host, String userName, String password, String database) {
         File restoreFile = new File(restoreFilePath);
         if (restoreFile.isDirectory()) {
             for (File file : Objects.requireNonNull(restoreFile.listFiles())) {
@@ -79,8 +79,13 @@ public class MySqlBackupRestoreUtils {
         stringBuilder.append(" ").append(database).append(" < ").append(restoreFilePath);
         try {
             Process process = Runtime.getRuntime().exec(getCommand(stringBuilder.toString()));
-            if (process.waitFor() == 0) {
-                System.out.println("数据已从 " + restoreFilePath + " 导入到数据库中");
+            try {
+                if (process.waitFor() == 0) {
+                    System.out.println("数据已从 " + restoreFilePath + " 导入到数据库中");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
             }
         } catch (IOException e) {
             e.printStackTrace();

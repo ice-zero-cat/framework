@@ -72,6 +72,8 @@ public class DaoUtil {
      *
      * @param object     类
      * @param methodName 方法名
+     * @param searchList 搜索参数
+     * @param pageable   分页对象
      * @return 方法返回值
      */
     public static Object invokeMethod(Object object, String methodName, List<Param> searchList, Pageable pageable) {

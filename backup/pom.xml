@@ -5,10 +5,10 @@
     <parent>
         <groupId>github.com.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>backup</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>backup</name>
     <description>mysql backup</description>
 

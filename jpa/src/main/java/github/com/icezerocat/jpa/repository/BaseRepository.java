@@ -18,6 +18,7 @@ import java.util.List;
  * @author 0.0.0
  * @version 1.0
  */
+@SuppressWarnings("unused")
 @NoRepositoryBean
 public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
     /**

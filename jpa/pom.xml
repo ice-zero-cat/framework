@@ -5,10 +5,10 @@
     <parent>
         <groupId>github.com.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>jpa</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>jpa</name>
     <description>jpa dao</description>
 
@@ -23,6 +23,12 @@
             <groupId>com.github.zhoumingjiejie</groupId>
             <artifactId>sonatype</artifactId>
             <version>0.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
     </dependencies>

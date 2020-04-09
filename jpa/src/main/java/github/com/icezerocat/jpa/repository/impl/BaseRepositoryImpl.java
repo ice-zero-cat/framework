@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -25,6 +26,7 @@ import java.util.List;
  * @author 0.0.0
  * @version 1.0
  */
+@SuppressWarnings("unused")
 public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
     private final JpaEntityInformation<T, ID> entityInformation;
 
@@ -32,17 +34,17 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
      * 构造
      *
      * @param entityInformation 实体信息
-     * @param entityManager 实体管理
+     * @param entityManager     实体管理
      */
-    @SuppressWarnings("all")
     public BaseRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityInformation = entityInformation;
     }
 
 
+    @NonNull
     @Override
-    public List<T> findAllByIdIn(Iterable<ID> ids, Sort sort) {
+    public List<T> findAllByIdIn(@NonNull Iterable<ID> ids, @NonNull Sort sort) {
         Assert.notNull(ids, "The given Iterable of Id's must not be null!");
 
         //为空返回空对象
@@ -65,7 +67,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     }
 
     @Override
-    public long deleteByIdIn(Iterable<ID> ids) {
+    public long deleteByIdIn(@NonNull Iterable<ID> ids) {
         List<T> domains = findAllById(ids);
         deleteInBatch(domains);
         return domains.size();
@@ -95,7 +97,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
          * @return 查询条件或者是条件组合（Predicate：一个简单或复杂的谓词类型）
          */
         @Override
-        public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        public Predicate toPredicate(Root<T> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder cb) {
             Path<?> path = root.get(this.entityInformation.getIdAttribute());
             this.parameter = cb.parameter(Iterable.class);
             return path.in(this.parameter);

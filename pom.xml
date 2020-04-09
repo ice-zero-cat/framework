@@ -10,7 +10,8 @@
     </parent>
     <groupId>github.com.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>
 
@@ -24,15 +25,27 @@
 
     <!--版本号管理-->
     <properties>
+        <!--上传到中央仓库的插件工具-->
+        <maven-scm-plugin.version>1.8.1</maven-scm-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <!--多模块处理-->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+        <!--模块依赖-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <jpa.version>0.0.1-SNAPSHOT</jpa.version>
+        <jpa.version>0.0.1</jpa.version>
         <reflectasm.version>1.11.9</reflectasm.version>
-        <core.version>0.0.1-SNAPSHOT</core.version>
+        <core.version>0.0.1</core.version>
         <guava.version>22.0</guava.version>
         <fastjson.version>1.2.49</fastjson.version>
-        <jdbc-template.version>0.0.1-SNAPSHOT</jdbc-template.version>
+        <jdbc-template.version>0.0.1</jdbc-template.version>
     </properties>
 
     <!--全局依赖-->
@@ -92,4 +105,159 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--+++++++++++++++++ maven中央仓库配置 ++++++++++++++++++-->
+    <!--1、分布式管理部分-->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <!--2、项目地址 -->
+    <scm>
+        <connection>scm:git:git@github.com:ice-zero-cat/framework.git</connection>
+        <developerConnection>scm:git:git@github.com:ice-zero-cat/framework.git</developerConnection>
+        <url>git@github.com:ice-zero-cat/framework.git</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+
+            <!--<plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    &lt;!&ndash;fork :  如果没有该项配置，devtools不会起作用，即应用不会restart &ndash;&gt;
+                    <fork>true</fork>
+                </configuration>
+            </plugin>-->
+
+            <!--1、++++++++++++++++ 添加deploy插件、sonatype的staging插件、release插件 +++++++++++++++++-->
+            <!--deploy插件-->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--sonatype插件-->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus-staging-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <!--scm插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>${maven-scm-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <arguments>-Psonatype-oss-release</arguments>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>false</localCheckout>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!--排除一些目录文件不要发布-->
+                    <checkModificationExcludes>
+                        <checkModificationExclude>.idea/</checkModificationExclude>
+                        <checkModificationExclude>.idea/*</checkModificationExclude>
+                        <checkModificationExclude>.idea/libraries/*</checkModificationExclude>
+                        <checkModificationExclude>pom.xml</checkModificationExclude>
+                        <checkModificationExclude>framework.iml</checkModificationExclude>
+                    </checkModificationExcludes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>${maven-scm-plugin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!--2、Javadoc和Source jar文件，配置javadoc和源Maven插件-->
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--javadoc-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <!-- 临时解决不规范的javadoc生成报错,后面要规范化后把这行去掉 -->
+                    <!--<additionalparam>-Xdoclint:none</additionalparam>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--3、GPG签名加密-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

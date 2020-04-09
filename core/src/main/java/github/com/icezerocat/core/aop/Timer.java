@@ -7,10 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author 0.0.0
- * @ProjectName: [easyexcel]
- * @Package: [com.excel.easyexcel.config.annotations.Timer]
- * @Description 时间记录annotation
- * @Date 2020/3/13 9:48
+ * ProjectName: [easyexcel]
+ * Package: [com.excel.easyexcel.config.annotations.Timer]
+ * Description 时间记录annotation
+ * Date 2020/3/13 9:48
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
