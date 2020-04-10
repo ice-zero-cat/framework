@@ -8,7 +8,7 @@
         <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>github.com.ice-zero-cat</groupId>
+    <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
