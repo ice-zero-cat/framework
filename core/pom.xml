@@ -12,6 +12,10 @@
     <name>core</name>
     <description>核心类</description>
 
+    <properties>
+        <equator.version>1.0.3</equator.version>
+    </properties>
+
     <dependencies>
         <!-- 类构建反射reflectasm -->
         <dependency>
@@ -33,6 +37,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+        </dependency>
+        <!--对象比较-->
+        <dependency>
+            <groupId>com.github.dadiyang</groupId>
+            <artifactId>equator</artifactId>
+            <version>${equator.version}</version>
         </dependency>
     </dependencies>
 

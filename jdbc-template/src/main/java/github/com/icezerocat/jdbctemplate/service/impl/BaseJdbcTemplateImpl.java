@@ -1,20 +1,29 @@
 package github.com.icezerocat.jdbctemplate.service.impl;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import com.sun.istack.NotNull;
 import github.com.icezerocat.core.builder.SearchBuild;
 import github.com.icezerocat.core.model.Param;
 import github.com.icezerocat.core.utils.DaoUtil;
+import github.com.icezerocat.core.utils.ReflectAsmUtil;
+import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.jdbctemplate.service.BaseJdbcTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.Transient;
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * ProjectName: [framework]
@@ -92,6 +101,85 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
         SearchBuild searchBuild = new SearchBuild.Builder(DaoUtil.getTableName(entityClass)).searchList(searchList).start();
         String sql = "SELECT * " + searchBuild.getHql();
         return executePageable(sql, searchBuild.getList(), entityClass, pageable);
+    }
+
+    @Override
+    public int[] insert(Class<?> tClass) {
+        List<Object[]> list = new ArrayList<>();
+        list.add(getInsertValue(tClass));
+        return this.batchUpdate(getInsertSql(tClass), list);
+    }
+
+    @Override
+    public <T> int[] insert(List<T> listT) {
+        List<Object[]> list = new ArrayList<>();
+        if (CollectionUtils.isEmpty(listT)) {
+            return new int[]{-2};
+        }
+        listT.forEach(t -> list.add(getInsertValue(t)));
+        return this.batchUpdate(getInsertSql(listT.get(0).getClass()), list);
+    }
+
+    /**
+     * 获取插入数据的value
+     *
+     * @param t   实体类
+     * @param <T> 泛型
+     * @return value数组
+     */
+    private <T> Object[] getInsertValue(T t) {
+        Class tClass = t.getClass();
+        List<Object> objectList = new ArrayList<>();
+        MethodAccess methodAccess = ReflectAsmUtil.get(tClass);
+        Field[] fields = tClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            //忽略static、Ignore、Transient、id
+            String fieldName = field.getName();
+            boolean isStatic = Modifier.isStatic(field.getModifiers());
+            boolean annotationPresent = field.isAnnotationPresent(Transient.class);
+            boolean id = Objects.equals("ID", fieldName.toUpperCase());
+            if (!isStatic && !annotationPresent && !id) {
+                //获取方法名
+                String methodName;
+                if (field.getType() == boolean.class) {
+                    methodName = fieldName.contains("is") ? fieldName : "is" + StringUtils.capitalize(fieldName);
+                } else {
+                    methodName = "get" + StringUtils.capitalize(fieldName);
+                }
+                objectList.add(methodAccess.invoke(t, methodName));
+            }
+        }
+        return objectList.toArray();
+    }
+
+    /**
+     * 获取插入sql语句
+     *
+     * @param tClass 类字节码
+     * @return insert-sql
+     */
+    private String getInsertSql(Class<?> tClass) {
+        StringBuilder sql = new StringBuilder().append(" INSERT INTO ").append(DaoUtil.getTableName(tClass)).append(" ( ");
+        StringBuilder o = new StringBuilder();
+        Field[] fields = tClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            //忽略static、Ignore、Transient、id
+            String fieldName = field.getName();
+            boolean isStatic = Modifier.isStatic(field.getModifiers());
+            boolean annotationPresent = field.isAnnotationPresent(Transient.class);
+            boolean id = Objects.equals("ID", fieldName.toUpperCase());
+            if (!isStatic && !annotationPresent && !id) {
+                sql.append(StringUtil.camel2Underline(fieldName)).append(" , ");
+                o.append(" ? ").append(" , ");
+            }
+        }
+        sql.delete(sql.length() - 2, sql.length());
+        o.delete(o.length() - 2, o.length());
+        sql.append(" ) ").append(" VALUES ").append(" ( ").append(o.toString()).append(" ) ");
+        return sql.toString();
     }
 
     /**

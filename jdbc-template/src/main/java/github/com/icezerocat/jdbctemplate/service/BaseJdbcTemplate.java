@@ -116,4 +116,21 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @return list分页数据
      */
     <T> List<T> getList(List<Param> searchList, Class<T> entityClass, Pageable pageable);
+
+    /**
+     * 插入对象
+     *
+     * @param tClass 类字节码
+     * @return 插入结果
+     */
+    int[] insert(Class<?> tClass);
+
+    /**
+     * 插入list集合对象
+     *
+     * @param listT list集合
+     * @param <T>   泛型
+     * @return 插入结果
+     */
+    <T> int[] insert(List<T> listT);
 }

@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +92,49 @@ public class ReflectAsmUtil {
             }
         }
 
+    }
+
+    /**
+     * 对象转map(包含父类)
+     *
+     * @param o 对象
+     * @return map(包含父类)
+     */
+    public static Map<String, Object> objectSup2Map(Object o) {
+        Map<String, Object> oMap = new HashMap<>(16);
+        Class oClass = o.getClass();
+        while (oClass != null) {
+            addMapValue(oMap, o, oClass);
+            oClass = oClass.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * 对象转map
+     *
+     * @param o 对象
+     * @return map
+     */
+    public static Map<String, Object> object2Map(Object o) {
+        Map<String, Object> oMap = new HashMap<>(16);
+        Class oClass = o.getClass();
+        addMapValue(oMap, o, oClass);
+        return oMap;
+    }
+
+    private static void addMapValue(Map<String, Object> oMap, Object o, Class oClass) {
+        Field[] declaredFields = oClass.getDeclaredFields();
+        for (Field field : declaredFields) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            try {
+                Object fieldValue = field.get(o);
+                oMap.put(fieldName, fieldValue);
+            } catch (IllegalAccessException ignored) {
+
+            }
+        }
     }
 
     /**

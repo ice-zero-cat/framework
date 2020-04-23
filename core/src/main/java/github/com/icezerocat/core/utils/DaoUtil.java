@@ -1,8 +1,11 @@
 package github.com.icezerocat.core.utils;
 
+import com.github.dadiyang.equator.FieldInfo;
+import github.com.icezerocat.core.builder.SearchBuild;
 import github.com.icezerocat.core.model.Param;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Table;
 import java.lang.reflect.InvocationTargetException;
@@ -121,5 +124,31 @@ public class DaoUtil {
             tableName = StringUtil.camel2Underline(entityClass.getSimpleName());
         }
         return tableName;
+    }
+
+    /**
+     * 构建更新sql（部分字段更新）
+     * 注：目前仅对String操作，其他类型未测试
+     *
+     * @param tableName  表名
+     * @param diffFields 不同的字段类。更新字段:fieldInfo.getFieldName(),值：fieldInfo.getSecondVal()
+     * @param params     条件参数
+     * @return update sql
+     */
+    public static String buildUpdateSql(String tableName, List<FieldInfo> diffFields, List<Param> params) {
+        String returnSql;
+        StringBuilder sql = new StringBuilder().append(" update ").append(tableName).append(" set ");
+        for (FieldInfo fieldInfo : diffFields) {
+            sql.append(StringUtil.camel2Underline(fieldInfo.getFieldName())).append(" = ")
+                    .append(" \"").append(fieldInfo.getSecondVal()).append("\" ").append(" , ");
+        }
+        sql.delete(sql.length() - 2, sql.length());
+        sql.append(" where 1 = 1 ");
+        returnSql = sql.toString();
+        if (!CollectionUtils.isEmpty(params)) {
+            SearchBuild builder = new SearchBuild.Builder().operation(sql.toString()).searchList(params).start();
+            returnSql = builder.getHql();
+        }
+        return returnSql;
     }
 }
