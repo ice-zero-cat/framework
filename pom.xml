@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>
@@ -41,15 +41,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <jpa.version>0.0.1</jpa.version>
+        <jpa.version>0.0.2</jpa.version>
         <reflectasm.version>1.11.9</reflectasm.version>
-        <core.version>0.0.1</core.version>
+        <core.version>0.0.2</core.version>
         <guava.version>29.0-jre</guava.version>
         <fastjson.version>1.2.49</fastjson.version>
-        <jdbc-template.version>0.0.1</jdbc-template.version>
-        <backup.version>0.0.1</backup.version>
-        <admin.version>0.0.1</admin.version>
-        <icezerocat-mybatismp.version>0.0.1</icezerocat-mybatismp.version>
+        <jdbc-template.version>0.0.2</jdbc-template.version>
+        <backup.version>0.0.2</backup.version>
+        <admin.version>0.0.2</admin.version>
+        <icezerocat-mybatismp.version>0.0.2</icezerocat-mybatismp.version>
     </properties>
 
     <!--全局依赖-->
@@ -91,7 +91,7 @@
             </dependency>
             <!-- icezerocat-mybatismp -->
             <dependency>
-                <groupId>githup.com.icezerocat</groupId>
+                <groupId>com.github.ice-zero-cat</groupId>
                 <artifactId>icezerocat-mybatismp</artifactId>
                 <version>${icezerocat-mybatismp.version}</version>
             </dependency>

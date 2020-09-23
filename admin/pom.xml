@@ -8,7 +8,7 @@
         <version>0.0.1</version>
     </parent>
     <artifactId>admin</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>admin</name>
     <description>启动模块</description>
 
@@ -46,7 +46,7 @@
         </dependency>
         <!-- mybatisPlus -->
         <dependency>
-            <groupId>githup.com.icezerocat</groupId>
+            <groupId>com.github.ice-zero-cat</groupId>
             <artifactId>icezerocat-mybatismp</artifactId>
         </dependency>
     </dependencies>
