@@ -228,4 +228,23 @@ public interface HttpStatus {
      */
     int SC_INSUFFICIENT_STORAGE = 507;
 
+    // --- 6xx 自定义 ---
+
+    /**
+     * 操作成功
+     */
+    int SC_ZERO_SUCCESS = 1000;
+    /**
+     * 响应失败
+     */
+    int SC_ZERO_FAILED = 1001;
+    /**
+     * 参数校验失败
+     */
+    int SC_ZERO_VALIDATE_FAILED = 1002;
+    /**
+     * 未知错误
+     */
+    int SC_ZERO_ERROR = 5000;
+
 }

@@ -21,6 +21,7 @@
         <module>core</module>
         <module>jdbc-template</module>
         <module>backup</module>
+        <module>icezerocat-mybatismp</module>
     </modules>
 
     <!--版本号管理-->
@@ -43,9 +44,12 @@
         <jpa.version>0.0.1</jpa.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <core.version>0.0.1</core.version>
-        <guava.version>22.0</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <fastjson.version>1.2.49</fastjson.version>
         <jdbc-template.version>0.0.1</jdbc-template.version>
+        <backup.version>0.0.1</backup.version>
+        <admin.version>0.0.1</admin.version>
+        <icezerocat-mybatismp.version>0.0.1</icezerocat-mybatismp.version>
     </properties>
 
     <!--全局依赖-->
@@ -84,6 +88,12 @@
                 <groupId>github.com.ice-zero-cat</groupId>
                 <artifactId>core</artifactId>
                 <version>${core.version}</version>
+            </dependency>
+            <!-- icezerocat-mybatismp -->
+            <dependency>
+                <groupId>githup.com.icezerocat</groupId>
+                <artifactId>icezerocat-mybatismp</artifactId>
+                <version>${icezerocat-mybatismp.version}</version>
             </dependency>
             <!-- 类构建反射reflectasm -->
             <dependency>

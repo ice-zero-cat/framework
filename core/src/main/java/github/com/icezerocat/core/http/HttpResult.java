@@ -1,5 +1,7 @@
 package github.com.icezerocat.core.http;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,22 +10,26 @@ import java.io.Serializable;
  * @author 0.0.0
  */
 @SuppressWarnings("all")
+@Data
 public class HttpResult implements Serializable {
 
     final private int code;
     final private String msg;
     final private Object data;
+    final private long count;
 
     private HttpResult(Build build) {
         this.code = build.code;
         this.msg = build.msg;
         this.data = build.data;
+        this.count = build.count;
     }
 
     public static class Build {
         private int code = HttpStatus.SC_OK;
         private String msg;
         private Object data;
+        private long count;
 
         public static Build getInstance() {
             return new Build();
@@ -59,6 +65,17 @@ public class HttpResult implements Serializable {
          */
         public Build setData(Object data) {
             this.data = data;
+            return this;
+        }
+
+        /**
+         * 设置总数
+         *
+         * @param count 总数
+         * @return build
+         */
+        public Build setCount(long count){
+            this.count = count;
             return this;
         }
 

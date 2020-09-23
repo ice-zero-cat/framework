@@ -1,6 +1,7 @@
 package github.com.icezerocat.admin;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author 0.0.0
  */
 @Slf4j
-@SpringBootApplication(scanBasePackages = ("github.com.icezerocat"))
+@MapperScan("com.githup.icezerocat.**.mapper")
+@SpringBootApplication(scanBasePackages = {"github.com.icezerocat", "githup.com.icezerocat"})
 public class AdminApplication {
 
     public static void main(String[] args) {

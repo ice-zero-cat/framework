@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  * 密码加密
  *
  * @author 0.0.0
- * @date Nov 20, 2018
+ * date Nov 20, 2018
  */
 public class PasswordSaltEncoder {
 

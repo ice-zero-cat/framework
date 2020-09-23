@@ -115,7 +115,7 @@ public class StringUtil {
     }
 
     /**
-     * 下划线转驼峰法
+     * 下划线转驼峰法-其他字符不变
      *
      * @param line 源字符串
      * @return 转换后的字符串
@@ -140,7 +140,7 @@ public class StringUtil {
     }
 
     /**
-     * 驼峰法转下划线
+     * 驼峰法转下划线-修改其他字符为小写
      *
      * @param line 源字符串
      * @return 转换后的字符串

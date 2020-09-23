@@ -44,6 +44,11 @@
             <groupId>github.com.ice-zero-cat</groupId>
             <artifactId>jdbc-template</artifactId>
         </dependency>
+        <!-- mybatisPlus -->
+        <dependency>
+            <groupId>githup.com.icezerocat</groupId>
+            <artifactId>icezerocat-mybatismp</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

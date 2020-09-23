@@ -1,7 +1,7 @@
 package github.com.icezerocat.core.utils;
 
-import com.github.dadiyang.equator.FieldInfo;
 import github.com.icezerocat.core.builder.SearchBuild;
+import github.com.icezerocat.core.common.equator.FieldInfo;
 import github.com.icezerocat.core.model.Param;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
