@@ -33,6 +33,7 @@ public class MpController {
     /**
      * 获取mapper
      *
+     * @param tableName 表单名
      * @return baseMapper
      */
     @GetMapping("getMapper")
