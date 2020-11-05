@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>icezerocat-mybatismp</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>icezerocat-mybatismp</name>
     <description>mybatisMp 动态注入</description>
 
