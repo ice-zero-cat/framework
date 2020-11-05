@@ -18,6 +18,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -30,6 +31,18 @@ import java.util.Objects;
  * @version 1.0
  */
 public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, T> implements IService<T> {
+
+    @Resource
+    protected E baseMapper;
+
+    @Override
+    public E getBaseMapper() {
+        return this.baseMapper;
+    }
+
+    public void setBaseMapper(E e) {
+        this.baseMapper = e;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override

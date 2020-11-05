@@ -27,7 +27,7 @@ public class JavassistBuilder {
      * 输出class目录
      */
     public static final String DIRECTORY_NAME = "./target/classes";
-    public static final String PACKAGE_NAME = "com.githup.icezerocat.ap.object";
+    public static final String PACKAGE_NAME = "com.github.icezerocat.ap.object";
     private CtClass ctClass;
 
     /**

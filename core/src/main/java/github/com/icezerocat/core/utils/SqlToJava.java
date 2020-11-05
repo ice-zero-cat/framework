@@ -32,6 +32,7 @@ public class SqlToJava {
             case "nvarchar":
             case "char":
             case "varchar":
+            case "varchar2":
             case "text":
             case "nchar":
                 return "String";
@@ -71,9 +72,8 @@ public class SqlToJava {
                 return "java.sql.Timestamp";
             default:
                 log.warn("-----------------》转化失败：未发现的类型" + sqlType);
-                break;
+                return "String";
         }
-        return sqlType;
     }
 
     /**
@@ -91,6 +91,7 @@ public class SqlToJava {
             case "nvarchar":
             case "char":
             case "varchar":
+            case "varchar2":
             case "text":
             case "nchar":
                 return String.class.getTypeName();
@@ -130,8 +131,7 @@ public class SqlToJava {
                 return Timestamp.class.getTypeName();
             default:
                 log.warn("-----------------》转化失败：未发现的类型" + sqlType);
-                break;
+                return String.class.getTypeName();
         }
-        return sqlType;
     }
 }
