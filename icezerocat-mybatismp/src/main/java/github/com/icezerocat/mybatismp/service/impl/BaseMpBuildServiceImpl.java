@@ -13,7 +13,6 @@ import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.mybatismp.model.javassist.build.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
-import javassist.CtClass;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -249,18 +248,10 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
                              String saveTargetClass
     ) {
         if (saveTargetClass == null) {
-            buildClass.writeFile();
+            return buildClass.writeFile();
         } else {
-            buildClass.writeFileByClass(saveTargetClass);
+            return buildClass.writeFileByClass(saveTargetClass);
         }
-        CtClass ctClass = buildClass.getCtClass();
-        Class easyExcelWriterObjectClass = null;
-        try {
-            easyExcelWriterObjectClass = Class.forName(ctClass.getName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return easyExcelWriterObjectClass;
     }
 
     /**
