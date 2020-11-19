@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.mybatismp.common.enums.NoahSqlMethod;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.SqlSession;
@@ -77,12 +78,21 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
         try (SqlSession batchSqlSession = sqlSessionBatch()) {
             for (T anEntityList : entityList) {
                 if (null != tableInfo && StringUtils.isNotBlank(tableInfo.getKeyProperty())) {
-                    if (this.containsKey(cls, anEntityList, tableInfo)) {
+                    TableCheck tableCheck = this.containsKey(cls, anEntityList, tableInfo);
+                    if (tableCheck.isContainsKey()) {
                         batchSqlSession.insert(SqlHelper.table(currentModelClass()).getSqlStatement(NoahSqlMethod.INSERT_BATCH.getMethod()), anEntityList);
                     } else {
                         MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
                         param.put(Constants.ENTITY, anEntityList);
-                        batchSqlSession.update(sqlStatement(SqlMethod.UPDATE_BY_ID), param);
+
+                        //判断是否有复合主键
+                        if (tableCheck.getKeyCount() > 1) {
+                            param.put(Constants.WRAPPER, (T) tableCheck.getQuery());
+                            batchSqlSession.update(sqlStatement(SqlMethod.UPDATE), param);
+                        } else {
+                            batchSqlSession.update(sqlStatement(SqlMethod.UPDATE_BY_ID), param);
+                        }
+
                     }
                     //不知道以后会不会有人说更新失败了还要执行插入
                     if (i >= 1 && i % batchSize == 0) {
@@ -110,7 +120,8 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
      * @return 判断是否为空，需要插入（空为true，需要插入）
      * @throws IllegalAccessException 非法访问异常
      */
-    private boolean containsKey(Class<?> cls, T entity, TableInfo tableInfo) throws IllegalAccessException {
+    private TableCheck containsKey(Class<?> cls, T entity, TableInfo tableInfo) throws IllegalAccessException {
+        TableCheck tableCheck = new TableCheck();
         Map<String, Object> idsMap = new HashMap<>();
         Field[] declaredFields = cls.getDeclaredFields();
         for (Field field : declaredFields) {
@@ -122,9 +133,12 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
                 idsMap.put(name, field.get(entity));
             }
         }
+        tableCheck.setKeyCount(idsMap.size());
         if (idsMap.size() <= 1) {
             Object idVal = ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty());
-            return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal));
+            boolean result = StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal));
+            tableCheck.setContainsKey(result);
+            return tableCheck;
         } else {
             QueryWrapper<T> query = Wrappers.query();
             boolean isNullBl = true;
@@ -136,7 +150,31 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
             }
             List<T> tList = getBaseMapper().selectList(query);
             boolean emptyT = CollectionUtils.isEmpty(tList);
-            return isNullBl || emptyT;
+            boolean result = isNullBl || emptyT;
+            tableCheck.setContainsKey(result);
+            tableCheck.setQuery(query);
+            return tableCheck;
         }
+    }
+
+    /**
+     * 表单检查类
+     */
+    @Data
+    private class TableCheck {
+        /**
+         * 更具主键判断数据是否存在（true：存在）
+         */
+        private boolean containsKey;
+
+        /**
+         * 主键总数
+         */
+        private int keyCount;
+
+        /**
+         * 查询条件
+         */
+        private QueryWrapper<T> query = Wrappers.query();
     }
 }

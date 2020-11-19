@@ -27,7 +27,6 @@ public class NoahSqlInjector extends AbstractSqlInjector {
                 new DeleteBatchByIds(),
                 new Update(),
                 new UpdateById(),
-                new UpdateByTableId(),
                 new SelectById(),
                 new SelectBatchByIds(),
                 new SelectByMap(),

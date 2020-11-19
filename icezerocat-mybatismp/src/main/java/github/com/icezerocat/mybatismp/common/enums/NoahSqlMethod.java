@@ -13,7 +13,6 @@ public enum NoahSqlMethod {
      * 插入
      */
     INSERT_BATCH("insertBatch", "插入一条数据（选择字段插入）", "<script>\nINSERT INTO %s %s VALUES %s\n</script>"),
-    UPDATE_BY_TABLE_ID("updateByTableId", "根据TableId 选择修改数据", "<script>\nUPDATE %s %s WHERE %s=#{%s} %s\n</script>"),
 
     ;
 
