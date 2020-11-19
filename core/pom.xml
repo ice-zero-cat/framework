@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
     <artifactId>core</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.4</version>
     <name>core</name>
     <description>核心类</description>
 
@@ -54,7 +54,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <!--<version>${commons-lang3.version}</version>-->
         </dependency>
     </dependencies>
 

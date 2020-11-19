@@ -3,10 +3,7 @@ package github.com.icezerocat.core.common.easyexcel.object.builder;
 
 import github.com.icezerocat.core.utils.UploadUtil;
 import javassist.*;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
+import javassist.bytecode.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -29,6 +26,7 @@ public class JavassistBuilder {
     private static final String PACKAGE_NAME = "com.excel.easyexcel.object.";
 
     private CtClass ctClass;
+    private static StringBuilder fieldBuilder = new StringBuilder();
 
     /**
      * 创建构建类build
@@ -142,41 +140,43 @@ public class JavassistBuilder {
 
         /**
          * 输出class文件
+         *
+         * @return Class
          */
-        public void writeFile() {
-            try {
-                //输出class文件
-                this.ctClass.writeFile(JavassistBuilder.DIRECTORY_NAME);
-            } catch (IOException | CannotCompileException e) {
-                e.printStackTrace();
-            }
+        public Class writeFile() {
+            return writeFileByClass(JavassistBuilder.DIRECTORY_NAME);
         }
 
         /**
          * 通过类锁定当前项目字节码路径
          *
          * @param c 项目中任意一个类
+         * @return Class
          */
-        public void writeFileByClass(Class c) {
-            try {
-                //输出class文件
-                this.ctClass.writeFile(UploadUtil.getClassesPath(c));
-            } catch (IOException | CannotCompileException e) {
-                e.printStackTrace();
-            }
+        public Class writeFileByClass(Class c) {
+            return this.writeFileByClass(UploadUtil.getClassesPath(c));
         }
 
         /**
          * 通过类锁定当前项目字节码路径
          *
          * @param c 项目中任意一个类
+         * @return Class
          */
-        public void writeFileByClass(String c) {
+        public Class writeFileByClass(String c) {
             try {
+                //添加toString方法。
+                String body = "{\n\t\t" + fieldBuilder.toString() + ";\n\t\t" + "return sb.toString();" + "\n}";
+                BuildMethod buildMethod = new BuildMethod(this.ctClass);
+                buildMethod.addMethod(ClassPool.getDefault().get(String.class.getName()), "toString", new CtClass[]{}, body).addAnnotation(Override.class).commitAnnotation();
+
                 //输出class文件
                 this.ctClass.writeFile(c);
-            } catch (IOException | CannotCompileException e) {
+                return Class.forName(this.ctClass.getName());
+            } catch (IOException | CannotCompileException | ClassNotFoundException | NotFoundException e) {
+                log.error("Javassist生成class出错：{}", e.getMessage());
                 e.printStackTrace();
+                return null;
             }
         }
     }
@@ -250,6 +250,16 @@ public class JavassistBuilder {
             this.classPool = ClassPool.getDefault();
             this.ctClass = ctClass;
             this.constPool = ctClass.getClassFile().getConstPool();
+
+            //初始化字段
+            fieldBuilder = new StringBuilder();
+            fieldBuilder.append("StringBuffer sb = new StringBuffer(); \n\t\t")
+                    .append("sb.append(\"\\n\")\n\t\t")
+                    .append(".append(\"[")
+                    .append(ctClass.getName())
+                    .append("]\")\n\t\t")
+                    .append(".append(\"\\n\\t\")");
+
         }
 
         /**
@@ -271,6 +281,17 @@ public class JavassistBuilder {
                 this.ctClass.addMethod(CtNewMethod.getter("get" + upperCase(fieldName), ctField));
                 //初始化
                 this.modifiers = Modifier.PRIVATE;
+                //toString字段
+                fieldBuilder.append("\n\t\t.append(")
+                        .append("\"")
+                        .append(fieldName)
+                        .append(":")
+                        .append("\")\n\t\t")
+                        .append(".append(this.")
+                        .append(fieldName)
+                        .append(")\n\t\t")
+                        .append(".append(\"\\n\\t\")");
+
             } catch (CannotCompileException | NotFoundException e) {
                 e.printStackTrace();
             }

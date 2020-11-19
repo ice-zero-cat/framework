@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
     <artifactId>icezerocat-mybatismp</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>icezerocat-mybatismp</name>
     <description>mybatisMp 动态注入</description>
 
@@ -25,6 +25,12 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
+        </dependency>-->
+
+        <!-- mysql -->
+        <!--<dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>-->
 
         <!-- swagger -->
@@ -90,7 +96,7 @@
         <dependency>
             <groupId>com.github.ice-zero-cat</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.3</version>
         </dependency>
     </dependencies>
 

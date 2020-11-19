@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="976c083c-c9cb-412b-a589-42cd068025ae" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="mysql" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="mysql" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="mysql" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="gplatform: schema" type="76f4a085:MysqlImplModel$Schema" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindBugs-IDEA-Workspace">
+    <toolWindowEditorPreview>false</toolWindowEditorPreview>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1a1hxMP5P7rFTARDSBLPlG9X2bf" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/icezerocat-mybatismp/src/main" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+  </component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="github.com.icezerocat.mybatismp.mapper" />
+      <recent name="github.com.icezerocat.mybatismp.model" />
+      <recent name="github.com.icezerocat.core.utils" />
+      <recent name="github.com.icezerocat.core.common.easyexcel.listener" />
+      <recent name="github.com.icezerocat.core.common.easyexcel.config" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\githup\framework\icezerocat-mybatismp\src\main" />
+      <recent name="C:\githup\framework\core\src\main\java\github\com\icezerocat\core\http" />
+      <recent name="C:\githup\framework\icezerocat-mybatismp\src\main\java\githup\com\icezerocat\mybatismp" />
+      <recent name="C:\githup\framework\core\src\main\java\github\com\icezerocat\core" />
+      <recent name="C:\githup\framework\core\src\main\java\github\com\icezerocat\core\utils" />
+    </key>
+  </component>
+  <component name="RestServicesNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="Found 10 services " type="fcff1e1b:RestServiceStructure$RootNode" />
+        </path>
+        <path>
+          <item name="Found 10 services " type="fcff1e1b:RestServiceStructure$RootNode" />
+          <item name="icezerocat-mybatismp" type="c588b436:RestServiceStructure$ProjectNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.MybatismpApplication">
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="admin" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="github.com.icezerocat.admin.AdminApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BackupApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="backup" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="github.com.icezerocat.backup.BackupApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MybatismpApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="icezerocat-mybatismp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="github.com.icezerocat.mybatismp.MybatismpApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Spring Boot.AdminApplication" />
+      <item itemvalue="Spring Boot.BackupApplication" />
+      <item itemvalue="Spring Boot.MybatismpApplication" />
+    </list>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <option name="contentProportion" value="0.14502165" />
+        <treeState>
+          <expand>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@436dc740" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@436dc740" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@d947bc4f" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="976c083c-c9cb-412b-a589-42cd068025ae" name="Default Changelist" comment="" />
+      <created>1585909252336</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585909252336</updated>
+      <workItem from="1585909256494" duration="3749000" />
+      <workItem from="1585964797221" duration="34190000" />
+      <workItem from="1586012875374" duration="8101000" />
+      <workItem from="1586057336518" duration="9835000" />
+      <workItem from="1586171426427" duration="4100000" />
+      <workItem from="1586225873460" duration="1368000" />
+      <workItem from="1586398788708" duration="6037000" />
+      <workItem from="1586425085622" duration="3211000" />
+      <workItem from="1586492498564" duration="3280000" />
+      <workItem from="1586516993491" duration="977000" />
+      <workItem from="1586571240980" duration="1800000" />
+      <workItem from="1586596885750" duration="1417000" />
+      <workItem from="1586666439409" duration="4900000" />
+      <workItem from="1586745007613" duration="5466000" />
+      <workItem from="1586849321048" duration="2207000" />
+      <workItem from="1587033002755" duration="653000" />
+      <workItem from="1587135125123" duration="64000" />
+      <workItem from="1587465845582" duration="482000" />
+      <workItem from="1587898279434" duration="644000" />
+      <workItem from="1598420584455" duration="382000" />
+      <workItem from="1600132007323" duration="15690000" />
+      <workItem from="1600180024216" duration="634000" />
+      <workItem from="1600307820205" duration="746000" />
+      <workItem from="1600737571769" duration="11381000" />
+      <workItem from="1600821272569" duration="22163000" />
+      <workItem from="1600912284123" duration="1877000" />
+      <workItem from="1603087425030" duration="1224000" />
+      <workItem from="1603367528435" duration="822000" />
+      <workItem from="1603446522652" duration="643000" />
+      <workItem from="1603760455875" duration="38000" />
+      <workItem from="1604025489491" duration="4729000" />
+      <workItem from="1604102228781" duration="5985000" />
+      <workItem from="1604410963906" duration="2798000" />
+      <workItem from="1604413890513" duration="599000" />
+      <workItem from="1604452046392" duration="25803000" />
+      <workItem from="1604493125704" duration="8431000" />
+      <workItem from="1604538454666" duration="4080000" />
+      <workItem from="1604555026831" duration="11738000" />
+      <workItem from="1604581326380" duration="4033000" />
+      <workItem from="1605113692746" duration="830000" />
+      <workItem from="1605142753386" duration="41000" />
+      <workItem from="1605237094038" duration="3504000" />
+      <workItem from="1605242683872" duration="202000" />
+      <workItem from="1605243013118" duration="2605000" />
+      <workItem from="1605357095623" duration="2773000" />
+      <workItem from="1605699628347" duration="5217000" />
+      <workItem from="1605748436707" duration="9517000" />
+      <workItem from="1605768202112" duration="8492000" />
+    </task>
+    <task id="LOCAL-00001" summary="【添加】1、easyExcel功能。2、字节码构建功能。3、对象比较功能。4、日期、IO、字符串等工具类。5、添加mybatisPlus模块。6、mybatisPlus动态注入功能">
+      <created>1600847588702</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1600847588702</updated>
+    </task>
+    <task id="LOCAL-00002" summary="【修改】1、mybatisPlus组名。2、版本更新">
+      <created>1600855196900</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1600855196900</updated>
+    </task>
+    <task id="LOCAL-00003" summary="【修改】1、mybatisPlus优化独立注入bean。2、修改db对象和java对象转换的工具类。3、修改数据链接默认配置。4、调整扫描本地entity为可选值">
+      <created>1604542102813</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1604542102813</updated>
+    </task>
+    <task id="LOCAL-00004" summary="【修改】1、构建class时添加toString方法">
+      <created>1604584456233</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1604584456233</updated>
+    </task>
+    <task id="LOCAL-00005" summary="【添加】1、删除mq启动类">
+      <created>1604584636016</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1604584636016</updated>
+    </task>
+    <task id="LOCAL-00006" summary="【修改】1、添加getMapper方法注释">
+      <created>1604585353682</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1604585353682</updated>
+    </task>
+    <task id="LOCAL-00007" summary="【修改】1、http返回结果，支持泛型">
+      <created>1605358221367</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1605358221367</updated>
+    </task>
+    <task id="LOCAL-00008" summary="【修改】1、core版本号修改">
+      <created>1605358549003</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1605358549003</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="【添加】1、easyExcel功能。2、字节码构建功能。3、对象比较功能。4、日期、IO、字符串等工具类。5、添加mybatisPlus模块。6、mybatisPlus动态注入功能" />
+    <MESSAGE value="【修改】1、mybatisPlus组名。2、版本更新" />
+    <MESSAGE value="【修改】1、mybatisPlus优化独立注入bean。2、修改db对象和java对象转换的工具类。3、修改数据链接默认配置。4、调整扫描本地entity为可选值" />
+    <MESSAGE value="【修改】1、构建class时添加toString方法" />
+    <MESSAGE value="【添加】1、删除mq启动类" />
+    <MESSAGE value="【修改】1、添加getMapper方法注释" />
+    <MESSAGE value="【修改】1、http返回结果，支持泛型" />
+    <MESSAGE value="【修改】1、core版本号修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="【修改】1、core版本号修改" />
+  </component>
+</project>

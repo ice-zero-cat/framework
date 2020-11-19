@@ -9,30 +9,30 @@ import java.io.Serializable;
  *
  * @author 0.0.0
  */
-@SuppressWarnings("all")
+@SuppressWarnings("unused")
 @Data
-public class HttpResult implements Serializable {
+public class HttpResult<T> implements Serializable {
 
     final private int code;
     final private String msg;
-    final private Object data;
+    final private T data;
     final private long count;
 
-    private HttpResult(Build build) {
+    private HttpResult(Build<T> build) {
         this.code = build.code;
         this.msg = build.msg;
         this.data = build.data;
         this.count = build.count;
     }
 
-    public static class Build {
+    public static class Build<T> {
         private int code = HttpStatus.SC_OK;
         private String msg;
-        private Object data;
+        private T data;
         private long count;
 
-        public static Build getInstance() {
-            return new Build();
+        public static <T> Build<T> getInstance() {
+            return new Build<>();
         }
 
         /**
@@ -41,7 +41,7 @@ public class HttpResult implements Serializable {
          * @param code code
          * @return build
          */
-        public Build setCode(int code) {
+        public Build<T> setCode(int code) {
             this.code = code;
             return this;
         }
@@ -52,7 +52,7 @@ public class HttpResult implements Serializable {
          * @param msg msg
          * @return build
          */
-        public Build setMsg(String msg) {
+        public Build<T> setMsg(String msg) {
             this.msg = msg;
             return this;
         }
@@ -63,7 +63,7 @@ public class HttpResult implements Serializable {
          * @param data data
          * @return build
          */
-        public Build setData(Object data) {
+        public Build<T> setData(T data) {
             this.data = data;
             return this;
         }
@@ -74,7 +74,7 @@ public class HttpResult implements Serializable {
          * @param count 总数
          * @return build
          */
-        public Build setCount(long count){
+        public Build<T> setCount(long count) {
             this.count = count;
             return this;
         }
@@ -84,33 +84,33 @@ public class HttpResult implements Serializable {
          *
          * @return httpResult
          */
-        public HttpResult complete() {
-            return new HttpResult(this);
+        public HttpResult<T> complete() {
+            return new HttpResult<>(this);
         }
     }
 
-    public static HttpResult error() {
-        return HttpResult.Build.getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg("未知异常，请联系管理员").complete();
+    public static <T> HttpResult<T> error() {
+        return HttpResult.Build.<T>getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg("未知异常，请联系管理员").complete();
     }
 
-    public static HttpResult error(String msg) {
-        return HttpResult.Build.getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg(msg).complete();
+    public static <T> HttpResult<T> error(String msg) {
+        return HttpResult.Build.<T>getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg(msg).complete();
     }
 
-    private static HttpResult error(int code, String msg) {
-        return HttpResult.Build.getInstance().setCode(code).setMsg(msg).complete();
+    private static <T> HttpResult<T> error(int code, String msg) {
+        return HttpResult.Build.<T>getInstance().setCode(code).setMsg(msg).complete();
     }
 
-    public static HttpResult ok(String msg) {
-        return HttpResult.Build.getInstance().setMsg(msg).complete();
+    public static <T> HttpResult<T> ok(String msg) {
+        return HttpResult.Build.<T>getInstance().setMsg(msg).complete();
     }
 
-    public static HttpResult ok(Object data) {
-        return HttpResult.Build.getInstance().setData(data).complete();
+    public static <T> HttpResult<T> ok(T data) {
+        return HttpResult.Build.<T>getInstance().setData(data).complete();
     }
 
-    public static HttpResult ok() {
-        return HttpResult.Build.getInstance().complete();
+    public static <T> HttpResult<T> ok() {
+        return Build.<T>getInstance().complete();
     }
 
 }

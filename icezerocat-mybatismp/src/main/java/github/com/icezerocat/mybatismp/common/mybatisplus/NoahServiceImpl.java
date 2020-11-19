@@ -1,26 +1,28 @@
 package github.com.icezerocat.mybatismp.common.mybatisplus;
 
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.mybatismp.common.enums.NoahSqlMethod;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Description: 重写ServiceImpl
@@ -29,7 +31,20 @@ import java.util.Objects;
  * @author zero
  * @version 1.0
  */
+@Slf4j
 public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, T> implements IService<T> {
+
+    @Resource
+    protected E baseMapper;
+
+    @Override
+    public E getBaseMapper() {
+        return this.baseMapper;
+    }
+
+    public void setBaseMapper(E e) {
+        this.baseMapper = e;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -62,8 +77,7 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
         try (SqlSession batchSqlSession = sqlSessionBatch()) {
             for (T anEntityList : entityList) {
                 if (null != tableInfo && StringUtils.isNotBlank(tableInfo.getKeyProperty())) {
-                    Object idVal = ReflectionKit.getMethodValue(cls, anEntityList, tableInfo.getKeyProperty());
-                    if (StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal))) {
+                    if (this.containsKey(cls, anEntityList, tableInfo)) {
                         batchSqlSession.insert(SqlHelper.table(currentModelClass()).getSqlStatement(NoahSqlMethod.INSERT_BATCH.getMethod()), anEntityList);
                     } else {
                         MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
@@ -80,7 +94,49 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
                 }
                 batchSqlSession.flushStatements();
             }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw ExceptionUtils.mpe("Error:  Unable to resolve @TableId. Entity may be multiple @TableId or does not exist @TableId");
         }
         return true;
+    }
+
+    /**
+     * 检查主键是否存在
+     *
+     * @param cls       类
+     * @param entity    对象
+     * @param tableInfo 表单信息
+     * @return 判断是否为空，需要插入（空为true，需要插入）
+     * @throws IllegalAccessException 非法访问异常
+     */
+    private boolean containsKey(Class<?> cls, T entity, TableInfo tableInfo) throws IllegalAccessException {
+        Map<String, Object> idsMap = new HashMap<>();
+        Field[] declaredFields = cls.getDeclaredFields();
+        for (Field field : declaredFields) {
+            field.setAccessible(true);
+            TableId tableIdAnn = field.getAnnotation(TableId.class);
+            if (tableIdAnn != null) {
+                String name = org.apache.commons.lang3.StringUtils.isNotBlank(tableIdAnn.value()) ?
+                        tableIdAnn.value() : StringUtil.camel2Underline(field.getName());
+                idsMap.put(name, field.get(entity));
+            }
+        }
+        if (idsMap.size() <= 1) {
+            Object idVal = ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty());
+            return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal));
+        } else {
+            QueryWrapper<T> query = Wrappers.query();
+            boolean isNullBl = true;
+            for (Map.Entry<String, Object> entry : idsMap.entrySet()) {
+                query.eq(entry.getKey(), entry.getValue());
+                if (isNullBl) {
+                    isNullBl = StringUtils.checkValNull(entry.getValue());
+                }
+            }
+            List<T> tList = getBaseMapper().selectList(query);
+            boolean emptyT = CollectionUtils.isEmpty(tList);
+            return isNullBl || emptyT;
+        }
     }
 }

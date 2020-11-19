@@ -9,16 +9,16 @@ import github.com.icezerocat.core.service.DbService;
 import github.com.icezerocat.core.utils.SqlToJava;
 import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.core.utils.UploadUtil;
-import github.com.icezerocat.mybatismp.model.javassist.build.JavassistBuilder;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
-import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
+import github.com.icezerocat.mybatismp.model.javassist.build.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
-import javassist.CtClass;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -90,10 +90,9 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
             Class<BaseMapper<T>> baseMapperClass = this.generateMapper(t, classesPath);
             try {
                 BaseMapper<T> tBaseMapper = this.proxyMpService.proxy(baseMapperClass);
-                if (tBaseMapper != null) {
-                    entityBaseMapperMap.put(t.getClass(), this.generateService(t, baseMapperClass, classesPath));
-                }
+                entityBaseMapperMap.put(t.getClass(), this.generateService(t, baseMapperClass, tBaseMapper, classesPath));
             } catch (Exception e) {
+                log.error("proxy NoahServiceImpl failed : {}", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -163,6 +162,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
                 TypeDescription.Generic.Builder.parameterizedType(BaseMapper.class, entityClass).build();
         ByteBuddy byteBuddy = new ByteBuddy();
         DynamicType.Unloaded<?> make = byteBuddy.makeInterface(genericSuperClass).name(packageName)
+                .annotateType(AnnotationDescription.Builder.ofType(Mapper.class).build())
                 .make();
         @SuppressWarnings("unchecked")
         Class<M> mClass = (Class<M>) this.generateClass(make, packageName, classesPath);
@@ -174,9 +174,11 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      *
      * @param t           实体类
      * @param <T>         泛型实体类
+     * @param eClass      mapper接口类
+     * @param e           mapper实现类实例
      * @param classesPath target路径
      */
-    private <E extends BaseMapper<T>, T> NoahServiceImpl<E, T> generateService(T t, Class<E> eClass, String classesPath) {
+    private <E extends BaseMapper<T>, T> NoahServiceImpl<E, T> generateService(T t, Class<E> eClass, E e, String classesPath) {
         Class entityClass = t.getClass();
         String simpleName = entityClass.getSimpleName();
 
@@ -197,12 +199,22 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         ByteBuddy serviceImplByteBuddy = new ByteBuddy();
         DynamicType.Unloaded<?> serviceImplMake = serviceImplByteBuddy.subclass(genericSuperClass)
                 .implement(TypeDescription.Generic.Builder.rawType(serviceClass).build())
-                .name(serviceImplPackageName).make();
+                .name(serviceImplPackageName)
+                .annotateType(AnnotationDescription.Builder.ofType(Service.class).define("value", StringUtils.uncapitalize(this.prefix.concat(serviceName))).build())
+                .make();
         @SuppressWarnings("unchecked")
         Class<NoahServiceImpl<E, T>> serviceImplClass = (Class<NoahServiceImpl<E, T>>) this.generateClass(serviceImplMake, serviceImplPackageName, classesPath);
 
         //注入bean
-        return ApplicationContextHelper.registerBeanDefinitionByClass(serviceImplClass);
+        NoahServiceImpl<E, T> instance = null;
+        try {
+            instance = serviceImplClass.newInstance();
+            instance.setBaseMapper(e);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            log.error("创建service实例失败：{}", ex.getMessage());
+            ex.printStackTrace();
+        }
+        return instance;
     }
 
     /**
@@ -236,18 +248,10 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
                              String saveTargetClass
     ) {
         if (saveTargetClass == null) {
-            buildClass.writeFile();
+            return buildClass.writeFile();
         } else {
-            buildClass.writeFileByClass(saveTargetClass);
+            return buildClass.writeFileByClass(saveTargetClass);
         }
-        CtClass ctClass = buildClass.getCtClass();
-        Class easyExcelWriterObjectClass = null;
-        try {
-            easyExcelWriterObjectClass = Class.forName(ctClass.getName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return easyExcelWriterObjectClass;
     }
 
     /**

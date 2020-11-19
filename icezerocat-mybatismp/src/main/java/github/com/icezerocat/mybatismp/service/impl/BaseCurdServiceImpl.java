@@ -3,6 +3,7 @@ package github.com.icezerocat.mybatismp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,10 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +39,7 @@ import java.util.Map;
 @Service
 public class BaseCurdServiceImpl implements BaseCurdService {
 
-    @Value("${entity.package}")
+    @Value("${entity.package:}")
     private String traversePackage;
 
     private final BaseMpBuildService baseMpBuildService;
@@ -79,7 +78,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
         boolean insert = false;
         ServiceImpl service = ApplicationContextHelper.getBean(org.springframework.util.StringUtils.uncapitalize(beanName), ServiceImpl.class);
         try {
-            if (packageName == null) {
+            if (packageName == null && ObjectUtils.isNotEmpty(traversePackage)) {
                 packageName = PackageUtil.getClassNameMap(traversePackage);
             }
             String fullPackageName = org.springframework.util.StringUtils.capitalize(entityName);
@@ -155,36 +154,5 @@ public class BaseCurdServiceImpl implements BaseCurdService {
             }
         }
         return query;
-    }
-
-
-    /**
-     * map转对象
-     *
-     * @param map   map
-     * @param clazz 类
-     * @return 对象
-     */
-    private Object map2Object(Map<String, Object> map, Class<?> clazz) {
-        if (map == null) {
-            return null;
-        }
-        Object obj = null;
-        try {
-            obj = clazz.newInstance();
-
-            Field[] fields = obj.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                int mod = field.getModifiers();
-                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
-                    continue;
-                }
-                field.setAccessible(true);
-                field.set(obj, map.get(field.getName()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return obj;
     }
 }
