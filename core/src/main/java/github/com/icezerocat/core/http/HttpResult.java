@@ -3,6 +3,8 @@ package github.com.icezerocat.core.http;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * HTTP结果封装
@@ -65,6 +67,17 @@ public class HttpResult<T> implements Serializable {
          */
         public Build<T> setData(T data) {
             this.data = data;
+            int count = 0;
+            if (data instanceof Collection) {
+                count = ((Collection) data).size();
+            }
+            if (data instanceof Object[]) {
+                count = ((Object[]) data).length;
+            }
+            if (data instanceof Map) {
+                count = ((Map) data).size();
+            }
+            this.setCount(count);
             return this;
         }
 
@@ -112,5 +125,4 @@ public class HttpResult<T> implements Serializable {
     public static <T> HttpResult<T> ok() {
         return Build.<T>getInstance().complete();
     }
-
 }
