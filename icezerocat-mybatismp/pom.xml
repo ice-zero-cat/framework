@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>icezerocat-mybatismp</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <name>icezerocat-mybatismp</name>
     <description>mybatisMp 动态注入</description>
 
@@ -18,20 +18,10 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <guava.version>29.0-jre</guava.version>
         <byte-buddy.version>1.10.14</byte-buddy.version>
+        <zero-core.version>0.0.5</zero-core.version>
     </properties>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
-        </dependency>-->
-
-        <!-- mysql -->
-        <!--<dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>-->
 
         <!-- swagger -->
         <dependency>
@@ -75,7 +65,7 @@
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>reflectasm</artifactId>
-            <version>1.11.9</version>
+            <!--<version>${reflectasm.version}</version>-->
         </dependency>
 
         <!--guava-->
@@ -96,7 +86,7 @@
         <dependency>
             <groupId>com.github.ice-zero-cat</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.3</version>
+            <version>${zero-core.version}</version>
         </dependency>
     </dependencies>
 

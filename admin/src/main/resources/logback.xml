@@ -32,7 +32,7 @@
     </appender>
 
     <!--自定义开发类-->
-    <logger name="github.com.icezerocat.admin" level="DEBUG"/>
+    <logger name="github.com.icezerocat" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

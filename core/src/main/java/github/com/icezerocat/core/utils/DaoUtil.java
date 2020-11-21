@@ -4,10 +4,8 @@ import github.com.icezerocat.core.builder.SearchBuild;
 import github.com.icezerocat.core.common.equator.FieldInfo;
 import github.com.icezerocat.core.model.Param;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.Table;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -68,62 +66,6 @@ public class DaoUtil {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * 反射调用动态方法
-     *
-     * @param object     类
-     * @param methodName 方法名
-     * @param searchList 搜索参数
-     * @param pageable   分页对象
-     * @return 方法返回值
-     */
-    public static Object invokeMethod(Object object, String methodName, List<Param> searchList, Pageable pageable) {
-        try {
-            //获取方法包括私有、父类
-            Method method = object.getClass().getDeclaredMethod(methodName, List.class, Pageable.class);
-            method.setAccessible(true);
-            return method.invoke(object, searchList, pageable);
-        } catch (NoSuchMethodException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                cause.printStackTrace();
-            }
-            log.error(object.getClass().getName() + " 找不到 " + methodName + " 方法! " + "\t" + e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                cause.printStackTrace();
-            }
-            if (e instanceof InvocationTargetException) {
-                Throwable t = ((InvocationTargetException) e).getTargetException();
-                if (t != null) {
-                    t.printStackTrace();
-                }
-            }
-            log.error(object.getClass().getName() + " 调用 " + methodName + " 方法失败！ " + "\t" + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取表单名
-     *
-     * @param entityClass 对象类
-     * @return 表单名
-     */
-    public static String getTableName(Class<?> entityClass) {
-        String tableName;
-        Table table = entityClass.getAnnotation(Table.class);
-        if (table != null) {
-            tableName = table.name();
-        } else {
-            tableName = StringUtil.camel2Underline(entityClass.getSimpleName());
-        }
-        return tableName;
     }
 
     /**

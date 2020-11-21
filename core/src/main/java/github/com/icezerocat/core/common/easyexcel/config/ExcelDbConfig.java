@@ -15,7 +15,10 @@ import org.springframework.util.ObjectUtils;
  */
 @Data
 @Component
-@PropertySource(value = {"classpath:application.properties", "classpath:application.yml"}, ignoreResourceNotFound = true)
+@PropertySource(value = {
+        "classpath:bootstrap.properties", "classpath:bootstrap.yml",
+        "classpath:application.properties", "classpath:application.yml"},
+        ignoreResourceNotFound = true)
 public class ExcelDbConfig {
     /**
      * 数据库连接地址
