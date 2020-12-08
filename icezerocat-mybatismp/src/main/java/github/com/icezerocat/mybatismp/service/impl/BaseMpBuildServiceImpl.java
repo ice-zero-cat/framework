@@ -10,6 +10,7 @@ import github.com.icezerocat.core.utils.SqlToJava;
 import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.core.utils.UploadUtil;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
+import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
 import github.com.icezerocat.mybatismp.model.javassist.build.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
@@ -86,14 +87,23 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      * @return NoahServiceImpl（增强版ServiceImpl-支持批量保存）
      */
     private <T> NoahServiceImpl<BaseMapper<T>, T> newInstance(T t, String classesPath) {
+        //jvm缓存是否存在
         if (!entityBaseMapperMap.containsKey(t.getClass())) {
-            Class<BaseMapper<T>> baseMapperClass = this.generateMapper(t, classesPath);
-            try {
-                BaseMapper<T> tBaseMapper = this.proxyMpService.proxy(baseMapperClass);
-                entityBaseMapperMap.put(t.getClass(), this.generateService(t, baseMapperClass, tBaseMapper, classesPath));
-            } catch (Exception e) {
-                log.error("proxy NoahServiceImpl failed : {}", e.getMessage());
-                e.printStackTrace();
+            //判断class缓存是否已经初始化过
+            String beanName = StringUtils.uncapitalize(this.getServiceName(t.getClass()));
+            Object bean = ApplicationContextHelper.getBean(beanName);
+            log.debug("缓存对象：{}", bean);
+            if (bean != null) {
+                entityBaseMapperMap.put(t.getClass(), bean);
+            } else {
+                Class<BaseMapper<T>> baseMapperClass = this.generateMapper(t, classesPath);
+                try {
+                    BaseMapper<T> tBaseMapper = this.proxyMpService.proxy(baseMapperClass);
+                    entityBaseMapperMap.put(t.getClass(), this.generateService(t, baseMapperClass, tBaseMapper, classesPath));
+                } catch (Exception e) {
+                    log.error("proxy NoahServiceImpl failed : {}", e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
         return (NoahServiceImpl<BaseMapper<T>, T>) entityBaseMapperMap.get(t.getClass());
@@ -155,8 +165,8 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      */
     private <M extends BaseMapper<T>, T> Class<M> generateMapper(T t, String classesPath) {
         Class entityClass = t.getClass();
-        String name = entityClass.getSimpleName().concat("Mapper");
-        String packageName = this.mapperPackage.concat(this.prefix).concat(name);
+        String name = this.getMapperName(entityClass);
+        String packageName = this.mapperPackage.concat(name);
         //构建泛型类
         TypeDescription.Generic genericSuperClass =
                 TypeDescription.Generic.Builder.parameterizedType(BaseMapper.class, entityClass).build();
@@ -180,11 +190,10 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      */
     private <E extends BaseMapper<T>, T> NoahServiceImpl<E, T> generateService(T t, Class<E> eClass, E e, String classesPath) {
         Class entityClass = t.getClass();
-        String simpleName = entityClass.getSimpleName();
 
         //生成service接口
-        String serviceName = simpleName.concat("Service");
-        String servicePackageName = this.mapperService.concat(this.prefix).concat(serviceName);
+        String serviceName = this.getServiceName(entityClass);
+        String servicePackageName = this.mapperService.concat(serviceName);
         TypeDescription.Generic iServiceGeneric =
                 TypeDescription.Generic.Builder.parameterizedType(IService.class, entityClass).build();
         ByteBuddy serviceByteBuddy = new ByteBuddy();
@@ -192,15 +201,15 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         Class<?> serviceClass = this.generateClass(serviceMake, servicePackageName, classesPath);
 
         //生成serviceImpl实现类
-        String serviceImplName = simpleName.concat("ServiceImpl");
-        String serviceImplPackageName = this.mapperServiceImpl.concat(this.prefix).concat(serviceImplName);
+        String serviceImplName = this.getServiceImplName(entityClass);
+        String serviceImplPackageName = this.mapperServiceImpl.concat(serviceImplName);
         TypeDescription.Generic genericSuperClass =
                 TypeDescription.Generic.Builder.parameterizedType(NoahServiceImpl.class, eClass, entityClass).build();
         ByteBuddy serviceImplByteBuddy = new ByteBuddy();
         DynamicType.Unloaded<?> serviceImplMake = serviceImplByteBuddy.subclass(genericSuperClass)
                 .implement(TypeDescription.Generic.Builder.rawType(serviceClass).build())
                 .name(serviceImplPackageName)
-                .annotateType(AnnotationDescription.Builder.ofType(Service.class).define("value", StringUtils.uncapitalize(this.prefix.concat(serviceName))).build())
+                .annotateType(AnnotationDescription.Builder.ofType(Service.class).define("value", StringUtils.uncapitalize(serviceName)).build())
                 .make();
         @SuppressWarnings("unchecked")
         Class<NoahServiceImpl<E, T>> serviceImplClass = (Class<NoahServiceImpl<E, T>>) this.generateClass(serviceImplMake, serviceImplPackageName, classesPath);
@@ -262,5 +271,37 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     private String getClassesPath() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         return UploadUtil.getClassesPath(stackTraceElements[3].getClass());
+    }
+
+    /**
+     * 获取mapperName
+     *
+     * @param tClass 对象Class
+     * @return mapper名
+     */
+    private String getMapperName(Class tClass) {
+        return this.prefix.concat(tClass.getSimpleName()).concat("Mapper");
+    }
+
+    /**
+     * 获取serviceName
+     *
+     * @param tClass 对象Class
+     * @return service名
+     */
+    private String getServiceName(Class tClass) {
+        String simpleName = tClass.getSimpleName();
+        return this.prefix.concat(simpleName).concat("Service");
+    }
+
+    /**
+     * 获取serviceName实现类名
+     *
+     * @param tClass 对象Class
+     * @return serviceImpl 名字
+     */
+    private String getServiceImplName(Class tClass) {
+        String simpleName = tClass.getSimpleName();
+        return this.prefix.concat(simpleName).concat("ServiceImpl");
     }
 }

@@ -1,10 +1,14 @@
 package github.com.icezerocat.admin.controller;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import github.com.icezerocat.admin.entity.OzapSalesErpInfo;
 import github.com.icezerocat.core.config.DruidConfig;
+import github.com.icezerocat.core.http.HttpResult;
 import github.com.icezerocat.core.service.DbService;
 import github.com.icezerocat.core.utils.DaoUtil;
 import github.com.icezerocat.jdbctemplate.service.BaseJdbcTemplate;
+import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
+import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +39,7 @@ public class AdminController {
     private final BaseJdbcTemplate baseJdbcTemplate;
     private final DbService dbService;
     private final DruidConfig druidConfig;
+    private final BaseMpBuildService baseMpBuildService;
 
 
     @RequestMapping("say")
@@ -57,5 +62,17 @@ public class AdminController {
         Connection connectionByDruid = this.druidConfig.getConnectionByDruid();
         log.debug("{}", connectionByDruid);
         connectionByDruid.close();
+    }
+
+    /**
+     * mp构建类处理缓存问题
+     *
+     * @return 总数
+     */
+    @GetMapping("mpBuild")
+    public HttpResult mpBuild() {
+        NoahServiceImpl<BaseMapper<Object>, Object> noahService = this.baseMpBuildService.newInstance("oz_ap_def_event");
+        log.debug("数据总数：{}", noahService.count());
+        return HttpResult.ok(noahService.count());
     }
 }
