@@ -2,7 +2,6 @@ package github.com.icezerocat.core.service;
 
 
 import github.com.icezerocat.core.common.easyexcel.object.ExcelWriter;
-import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
 
 import java.util.Map;
 
@@ -78,13 +77,4 @@ public interface ClassService {
      * @return 生成类
      */
     Class generateClassByAnnotation(String tableName, String className, Map<String, ExcelWriter> excelWriterMap, Map<String, String> fieldMapping, Class saveTargetClass);
-
-    /**
-     * IO 写文件
-     *
-     * @param buildClass      构建类
-     * @param saveTargetClass 保存类字节码文件
-     * @return 类
-     */
-    Class writeField(JavassistBuilder.BuildClass buildClass, Class saveTargetClass);
 }

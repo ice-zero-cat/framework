@@ -3,6 +3,7 @@ package github.com.icezerocat.mybatismp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -15,18 +16,17 @@ import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
 import github.com.icezerocat.mybatismp.model.Search;
 import github.com.icezerocat.mybatismp.service.BaseCurdService;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
+import github.com.icezerocat.mybatismp.utils.MqPackageUtils;
 import github.com.icezerocat.mybatismp.utils.PackageUtil;
 import github.com.icezerocat.mybatismp.utils.ReflectAsmUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description: 基础增删改查
@@ -103,9 +103,126 @@ public class BaseCurdServiceImpl implements BaseCurdService {
     }
 
     @Override
-    public HttpResult saveOrUpdateBatch(String tableName, List<Object> objectList) {
+    public HttpResult saveOrUpdateBatchByTableName(String tableName, List<Object> objectList) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
         return HttpResult.ok(baseMapperObjectNoahService.saveOrUpdateBatch(objectList));
+    }
+
+    @Override
+    public HttpResult<List<?>> retrieveByTableName(String tableName, long page, long limit, List<Search> searches) {
+        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
+        return this.retrieve(baseMapperObjectNoahService, page, limit, searches);
+    }
+
+    @Override
+    public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches) {
+        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService;
+        try {
+            baseMapperObjectNoahService = this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(entityName));
+        } catch (IllegalAccessException | InstantiationException e) {
+            String message = "项目没有此对象".concat(entityName).concat(":").concat(e.getMessage());
+            log.error(message);
+            e.printStackTrace();
+            return HttpResult.Build.<List<?>>getInstance()
+                    .setData(Collections.emptyList())
+                    .setCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .setMsg(message)
+                    .setCount(0L)
+                    .complete();
+        }
+        return this.retrieve(baseMapperObjectNoahService, page, limit, searches);
+    }
+
+    @Override
+    public HttpResult deleteByTableName(String tableName, List<Long> ids) {
+        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
+        return HttpResult.ok(baseMapperObjectNoahService.removeByIds(ids));
+    }
+
+    @Override
+    public HttpResult deleteBySearch(String tableName, List<Search> searches) {
+        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
+        return this.deleteBySearch(baseMapperObjectNoahService, searches);
+    }
+
+    @Override
+    public HttpResult deleteByEntitySearch(String entity, List<Search> searches) {
+        try {
+            NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService =
+                    this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(entity));
+            return this.deleteBySearch(baseMapperObjectNoahService, searches);
+        } catch (IllegalAccessException | InstantiationException e) {
+            log.error("删除失败或构建实体类存在异常！具体原因：".concat(e.getMessage()));
+            e.printStackTrace();
+            return HttpResult.error("删除失败或构建实体类存在异常！具体原因：".concat(e.getMessage()));
+        }
+    }
+
+    @Override
+    public HttpResult saveOrUpdateBatch(String entityName, List<Map<String, Object>> mapList) {
+        try {
+            Class aClass = MqPackageUtils.getMqClassByName(entityName);
+            if (aClass == null) {
+                return HttpResult.error("项目没有此对象".concat(entityName));
+            }
+            NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(aClass.newInstance());
+            List<Object> objects = new ArrayList<>();
+            for (Map<String, Object> map : mapList) {
+                Object newInstance = aClass.newInstance();
+                ReflectAsmUtil.mapToBean(map, newInstance);
+                objects.add(newInstance);
+            }
+            return HttpResult.ok(baseMapperObjectNoahService.saveOrUpdateBatch(objects));
+        } catch (IllegalAccessException | InstantiationException e) {
+            log.error("类创建实例出错：{}", e.getMessage());
+            e.printStackTrace();
+            return HttpResult.error("类创建实例出错：".concat(e.getMessage()));
+        }
+    }
+
+    /**
+     * 查询
+     *
+     * @param baseMapperObjectNoahService service
+     * @param page                        页码
+     * @param limit                       页码大小
+     * @param searches                    搜索条件
+     * @return 查询结果
+     */
+    private HttpResult<List<?>> retrieve(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, long page, long limit, List<Search> searches) {
+        Wrapper wrapper = this.getWrapper(searches);
+        HttpResult.Build<List<?>> build = HttpResult.Build.getInstance();
+        if (wrapper == null) {
+            return HttpResult.error("搜索条件出错");
+        }
+        if (page > -1 && limit > -1) {
+            Page ipage = new Page(page, limit);
+            Page selectPage = baseMapperObjectNoahService.getBaseMapper().selectPage(ipage, wrapper);
+            return build.setCode(HttpStatus.OK.value()).setCount(selectPage.getTotal()).setData(selectPage.getRecords()).complete();
+        } else {
+            List selectList = baseMapperObjectNoahService.getBaseMapper().selectList(wrapper);
+            return build.setCode(HttpStatus.OK.value()).setCount((long) selectList.size()).setData(selectList).complete();
+        }
+    }
+
+    /**
+     * 根据搜索条件删除数据
+     *
+     * @param baseMapperObjectNoahService 删除service实现类
+     * @param searches                    搜索条件
+     * @return 搜索结果
+     */
+    private HttpResult deleteBySearch(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, List<Search> searches) {
+        Wrapper wrapper = this.getWrapper(searches);
+        if (wrapper == null || CollectionUtils.isEmpty(searches)) {
+            return HttpResult.error("搜索条件为空");
+        }
+        boolean remove = baseMapperObjectNoahService.remove(wrapper);
+        if (remove) {
+            return HttpResult.ok("删除成功");
+        } else {
+            return HttpResult.error("删除失败");
+        }
     }
 
     /**

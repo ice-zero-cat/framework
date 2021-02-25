@@ -11,7 +11,6 @@ import github.com.icezerocat.core.service.ClassService;
 import github.com.icezerocat.core.service.DbService;
 import github.com.icezerocat.core.utils.SqlToJava;
 import github.com.icezerocat.core.utils.StringUtil;
-import javassist.CtClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -77,7 +76,7 @@ public class ClassServiceImpl implements ClassService {
             buildField.addField(fieldType, field);
         });
 
-        return this.writeField(buildClass, saveTargetClass);
+        return buildClass.writeFile();
     }
 
     @Override
@@ -130,25 +129,7 @@ public class ClassServiceImpl implements ClassService {
             }
         }
 
-        return writeField(buildClass, saveTargetClass);
-    }
-
-
-    @Override
-    public Class writeField(JavassistBuilder.BuildClass buildClass, Class saveTargetClass) {
-        if (saveTargetClass != null) {
-            buildClass.writeFileByClass(saveTargetClass);
-        } else {
-            buildClass.writeFile();
-        }
-        CtClass ctClass = buildClass.getCtClass();
-        Class easyExcelWriterObjectClass = null;
-        try {
-            easyExcelWriterObjectClass = Class.forName(ctClass.getName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return easyExcelWriterObjectClass;
+        return buildClass.writeFile();
     }
 
 }

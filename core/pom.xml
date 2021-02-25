@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>core</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <name>core</name>
     <description>核心类</description>
 
@@ -54,7 +54,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
+
         <!--    fastJson    -->
         <dependency>
             <groupId>com.alibaba</groupId>

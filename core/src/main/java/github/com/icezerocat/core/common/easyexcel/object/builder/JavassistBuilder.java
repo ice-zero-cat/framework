@@ -1,9 +1,13 @@
 package github.com.icezerocat.core.common.easyexcel.object.builder;
 
 
-import github.com.icezerocat.core.utils.UploadUtil;
+import github.com.icezerocat.core.config.ZeroWebConfig;
+import github.com.icezerocat.core.utils.ClassUtils;
 import javassist.*;
-import javassist.bytecode.*;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -22,9 +26,8 @@ public class JavassistBuilder {
     /**
      * 输出class目录
      */
-    private static final String DIRECTORY_NAME = "./target/classes";
-    private static final String PACKAGE_NAME = "com.excel.easyexcel.object.";
-
+    public static final String PACKAGE_NAME = "github.com.icezerocat.ap.";
+    public static final String DIRECTORY_NAME = "apTarget/classes";
     private CtClass ctClass;
     private static StringBuilder fieldBuilder = new StringBuilder();
 
@@ -139,31 +142,13 @@ public class JavassistBuilder {
         }
 
         /**
-         * 输出class文件
+         * 通过类锁定当前项目字节码路径
          *
          * @return Class
          */
         public Class writeFile() {
-            return writeFileByClass(JavassistBuilder.DIRECTORY_NAME);
-        }
-
-        /**
-         * 通过类锁定当前项目字节码路径
-         *
-         * @param c 项目中任意一个类
-         * @return Class
-         */
-        public Class writeFileByClass(Class c) {
-            return this.writeFileByClass(UploadUtil.getClassesPath(c));
-        }
-
-        /**
-         * 通过类锁定当前项目字节码路径
-         *
-         * @param c 项目中任意一个类
-         * @return Class
-         */
-        public Class writeFileByClass(String c) {
+            String classSysPath = ZeroWebConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
+            log.debug("writeFileByClass:{}", classSysPath);
             try {
                 //添加toString方法。
                 String body = "{\n\t\t" + fieldBuilder.toString() + ";\n\t\t" + "return sb.toString();" + "\n}";
@@ -171,9 +156,15 @@ public class JavassistBuilder {
                 buildMethod.addMethod(ClassPool.getDefault().get(String.class.getName()), "toString", new CtClass[]{}, body).addAnnotation(Override.class).commitAnnotation();
 
                 //输出class文件
-                this.ctClass.writeFile(c);
-                return Class.forName(this.ctClass.getName());
-            } catch (IOException | CannotCompileException | ClassNotFoundException | NotFoundException e) {
+                this.ctClass.writeFile(classSysPath);
+                ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                ClassLoader contextClassLoaderParent = contextClassLoader.getParent();
+                Class<? extends ClassLoader> contextClassLoaderParentClass = contextClassLoaderParent.getClass();
+                ClassLoader classLoader = contextClassLoaderParentClass.getClassLoader();
+                return ClassUtils.searchClassByClassName(
+                        classSysPath,
+                        this.ctClass.getName(), Thread.currentThread().getContextClassLoader().getParent());
+            } catch (IOException | CannotCompileException | ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
                 log.error("Javassist生成class出错：{}", e.getMessage());
                 e.printStackTrace();
                 return null;

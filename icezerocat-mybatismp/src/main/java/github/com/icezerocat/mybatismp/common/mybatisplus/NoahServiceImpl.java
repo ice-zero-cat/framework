@@ -33,7 +33,7 @@ import java.util.*;
  * @version 1.0
  */
 @Slf4j
-public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, T> implements IService<T> {
+public abstract class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, T> implements IService<T> {
 
     @Resource
     protected E baseMapper;
@@ -135,7 +135,7 @@ public class NoahServiceImpl<E extends BaseMapper<T>, T> extends ServiceImpl<E, 
         }
         tableCheck.setKeyCount(idsMap.size());
         if (idsMap.size() <= 1) {
-            Object idVal = ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty());
+            Object idVal = ReflectionKit.getFieldValue(entity, tableInfo.getKeyProperty());
             boolean result = StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal));
             tableCheck.setContainsKey(result);
             return tableCheck;

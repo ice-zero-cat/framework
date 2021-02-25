@@ -66,15 +66,4 @@ public class UploadUtil {
     public static String getWebPath() {
         return System.getProperty("user.dir").replaceAll("\\\\", "/") + "/";
     }
-
-    /**
-     * 获取生成的target字节码路径
-     *
-     * @param c 类
-     * @return 字节码根目录
-     */
-    public static String getClassesPath(Class c) {
-        File f = new File(c.getResource("/").getPath());
-        return f.getPath();
-    }
 }

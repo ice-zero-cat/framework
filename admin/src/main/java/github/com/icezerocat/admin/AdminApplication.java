@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author 0.0.0
  */
 @Slf4j
-@MapperScan("com.github.icezerocat.**.mapper")
-@SpringBootApplication(scanBasePackages = {"github.com.icezerocat", "com.github.icezerocat"})
+@MapperScan({"github.com.icezerocat.**.mapper"})
+@SpringBootApplication(scanBasePackages = {"github.com.icezerocat"})
 public class AdminApplication {
 
     public static void main(String[] args) {
