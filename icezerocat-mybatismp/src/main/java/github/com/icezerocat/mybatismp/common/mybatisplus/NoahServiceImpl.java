@@ -1,7 +1,6 @@
 package github.com.icezerocat.mybatismp.common.mybatisplus;
 
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -12,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import github.com.icezerocat.core.utils.StringUtil;
+import github.com.icezerocat.mybatismp.annotations.MultipleTableId;
 import github.com.icezerocat.mybatismp.common.enums.NoahSqlMethod;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -126,7 +126,7 @@ public abstract class NoahServiceImpl<E extends BaseMapper<T>, T> extends Servic
         Field[] declaredFields = cls.getDeclaredFields();
         for (Field field : declaredFields) {
             field.setAccessible(true);
-            TableId tableIdAnn = field.getAnnotation(TableId.class);
+            MultipleTableId tableIdAnn = field.getAnnotation(MultipleTableId.class);
             if (tableIdAnn != null) {
                 String name = org.apache.commons.lang3.StringUtils.isNotBlank(tableIdAnn.value()) ?
                         tableIdAnn.value() : StringUtil.camel2Underline(field.getName());

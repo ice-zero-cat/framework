@@ -67,7 +67,6 @@ public class DruidConfig {
 
         try {
             druidDataSource.setFilters(druidDataSourceProperties.getFilters());
-            log.debug("druidDataSource:{}", druidDataSource);
             druidDataSource.init();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -118,9 +118,9 @@ public class CurdController {
      * @return 查询结果
      */
     @ApiOperation("查询")
-    @PostMapping("retrieve")
-    public HttpResult retrieve(@RequestParam String tableName,
-                               @RequestBody(required = false) SearchPageRequest searchPageRequest) {
+    @PostMapping("retrieveByTable")
+    public HttpResult retrieveByTable(@RequestParam String tableName,
+                                      @RequestBody(required = false) SearchPageRequest searchPageRequest) {
         searchPageRequest = searchPageRequest != null ? searchPageRequest : new SearchPageRequest();
         HttpResult retrieve = this.baseCurdService.retrieve(
                 tableName,
