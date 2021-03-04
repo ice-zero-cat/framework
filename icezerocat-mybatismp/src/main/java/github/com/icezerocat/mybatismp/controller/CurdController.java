@@ -1,7 +1,6 @@
 package github.com.icezerocat.mybatismp.controller;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import github.com.icezerocat.core.http.HttpResult;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.mybatismp.model.Search;
@@ -122,20 +121,14 @@ public class CurdController {
     public HttpResult retrieveByTable(@RequestParam String tableName,
                                       @RequestBody(required = false) SearchPageRequest searchPageRequest) {
         searchPageRequest = searchPageRequest != null ? searchPageRequest : new SearchPageRequest();
-        HttpResult retrieve = this.baseCurdService.retrieve(
+        HttpResult retrieve = this.baseCurdService.retrieveByTableName(
                 tableName,
                 searchPageRequest.getPageNum(),
                 searchPageRequest.getPageSize(),
                 searchPageRequest.getSearches()
         );
-        PageResult pageResult;
-        if (searchPageRequest.getPageNum() > -1 && searchPageRequest.getPageSize() > -1) {
-            Page ipage = retrieve.getData() == null ? new Page() : (Page) retrieve.getData();
-            pageResult = PageResult.getPageResult(ipage.getRecords(), ipage.getSize(), searchPageRequest);
-        } else {
-            List list = retrieve.getData() == null ? new ArrayList() : (List) retrieve.getData();
-            pageResult = PageResult.getPageResult(list, list.size(), searchPageRequest);
-        }
+        List list = retrieve.getData() == null ? new ArrayList() : (List) retrieve.getData();
+        PageResult pageResult = PageResult.getPageResult(list, retrieve.getCount(), searchPageRequest);
         return HttpResult.ok(pageResult);
     }
 

@@ -31,7 +31,7 @@ public class HttpResult<T> implements Serializable {
         private int code = HttpStatus.SC_OK;
         private String msg;
         private T data;
-        private long count;
+        private long count = 0;
 
         public static <T> Build<T> getInstance() {
             return new Build<>();
@@ -67,17 +67,19 @@ public class HttpResult<T> implements Serializable {
          */
         public Build<T> setData(T data) {
             this.data = data;
-            int count = 0;
-            if (data instanceof Collection) {
-                count = ((Collection) data).size();
+            if (this.count <= 0) {
+                int count = 0;
+                if (data instanceof Collection) {
+                    count = ((Collection) data).size();
+                }
+                if (data instanceof Object[]) {
+                    count = ((Object[]) data).length;
+                }
+                if (data instanceof Map) {
+                    count = ((Map) data).size();
+                }
+                this.setCount(count);
             }
-            if (data instanceof Object[]) {
-                count = ((Object[]) data).length;
-            }
-            if (data instanceof Map) {
-                count = ((Map) data).size();
-            }
-            this.setCount(count);
             return this;
         }
 

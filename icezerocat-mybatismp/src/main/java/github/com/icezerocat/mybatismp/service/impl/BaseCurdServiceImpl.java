@@ -201,7 +201,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
             return build.setCode(HttpStatus.OK.value()).setCount(selectPage.getTotal()).setData(selectPage.getRecords()).complete();
         } else {
             List selectList = baseMapperObjectNoahService.getBaseMapper().selectList(wrapper);
-            return build.setCode(HttpStatus.OK.value()).setCount((long) selectList.size()).setData(selectList).complete();
+            return build.setCode(HttpStatus.OK.value()).setCount(selectList.size()).setData(selectList).complete();
         }
     }
 
