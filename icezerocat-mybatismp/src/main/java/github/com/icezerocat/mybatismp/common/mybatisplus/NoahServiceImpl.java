@@ -77,8 +77,11 @@ public abstract class NoahServiceImpl<E extends BaseMapper<T>, T> extends Servic
         int i = 0;
         try (SqlSession batchSqlSession = sqlSessionBatch()) {
             for (T anEntityList : entityList) {
-                if (null != tableInfo && StringUtils.isNotBlank(tableInfo.getKeyProperty())) {
-                    TableCheck tableCheck = this.containsKey(cls, anEntityList, tableInfo);
+                //获取多主键
+                TableCheck tableCheck = this.containsKey(cls, anEntityList, tableInfo);
+                boolean isMultipleTableId = tableCheck.getKeyCount() > 1;
+                boolean hasKeyProperty = (null != tableInfo && StringUtils.isNotBlank(tableInfo.getKeyProperty()));
+                if (hasKeyProperty || isMultipleTableId) {
                     if (tableCheck.isContainsKey()) {
                         batchSqlSession.insert(SqlHelper.table(currentModelClass()).getSqlStatement(NoahSqlMethod.INSERT_BATCH.getMethod()), anEntityList);
                     } else {
@@ -86,7 +89,7 @@ public abstract class NoahServiceImpl<E extends BaseMapper<T>, T> extends Servic
                         param.put(Constants.ENTITY, anEntityList);
 
                         //判断是否有复合主键
-                        if (tableCheck.getKeyCount() > 1) {
+                        if (isMultipleTableId) {
                             param.put(Constants.WRAPPER, (T) tableCheck.getQuery());
                             batchSqlSession.update(sqlStatement(SqlMethod.UPDATE), param);
                         } else {
