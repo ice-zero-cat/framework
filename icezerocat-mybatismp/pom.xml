@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>icezerocat-mybatismp</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <name>icezerocat-mybatismp</name>
     <description>mybatisMp 动态注入</description>
 
@@ -66,7 +66,6 @@
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>reflectasm</artifactId>
-            <!--<version>${reflectasm.version}</version>-->
         </dependency>
 
         <!--guava-->
@@ -97,14 +96,5 @@
             <version>${reflections.version}</version>
         </dependency>
     </dependencies>
-
-    <!--<build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>-->
 
 </project>
