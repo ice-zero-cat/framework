@@ -3,14 +3,17 @@ package github.com.icezerocat.mybatismp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
 import github.com.icezerocat.core.http.HttpResult;
 import github.com.icezerocat.core.utils.DateUtil;
+import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
 import github.com.icezerocat.mybatismp.model.Search;
@@ -52,7 +55,12 @@ public class BaseCurdServiceImpl implements BaseCurdService {
 
     @Override
     public HttpResult retrieve(String beanName, long page, long limit, List<Search> searches) {
-        Wrapper wrapper = this.getWrapper(searches);
+        return this.retrieve(beanName, page, limit, searches, Collections.emptyList());
+    }
+
+    @Override
+    public HttpResult retrieve(String beanName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
+        Wrapper wrapper = this.getWrapper(searches, orders);
         if (wrapper == null) {
             return HttpResult.error("搜索条件出错");
         }
@@ -103,19 +111,48 @@ public class BaseCurdServiceImpl implements BaseCurdService {
     }
 
     @Override
-    public HttpResult saveOrUpdateBatchByTableName(String tableName, List<Object> objectList) {
+    public HttpResult saveOrUpdateBatchByTableName(String tableName, List<Map<String, Object>> objectList) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        return HttpResult.ok(baseMapperObjectNoahService.saveOrUpdateBatch(objectList));
+        String entityName = JavassistBuilder.PACKAGE_NAME + org.springframework.util.StringUtils.capitalize(StringUtil.underlineToCamelCase(tableName));
+        boolean insert;
+        try {
+            Class aClass = Class.forName(entityName);
+
+            List<Object> objects = new ArrayList<>();
+            for (Map<String, Object> map : objectList) {
+                Object newInstance = aClass.newInstance();
+                ReflectAsmUtil.mapToBean(map, newInstance);
+                objects.add(newInstance);
+            }
+            insert = baseMapperObjectNoahService.saveOrUpdateBatch(objects);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return HttpResult.error("找不到类:" + entityName);
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+            return HttpResult.error("创建对象失败:" + entityName);
+        }
+        return HttpResult.ok(insert);
     }
 
     @Override
     public HttpResult<List<?>> retrieveByTableName(String tableName, long page, long limit, List<Search> searches) {
+        return this.retrieveByTableName(tableName, page, limit, searches, Collections.emptyList());
+    }
+
+    @Override
+    public HttpResult<List<?>> retrieveByTableName(String tableName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        return this.retrieve(baseMapperObjectNoahService, page, limit, searches);
+        return this.retrieve(baseMapperObjectNoahService, page, limit, searches, orders);
     }
 
     @Override
     public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches) {
+        return this.retrieveByEntity(entityName, page, limit, searches, Collections.emptyList());
+    }
+
+    @Override
+    public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService;
         try {
             baseMapperObjectNoahService = this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(entityName));
@@ -130,7 +167,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
                     .setCount(0L)
                     .complete();
         }
-        return this.retrieve(baseMapperObjectNoahService, page, limit, searches);
+        return this.retrieve(baseMapperObjectNoahService, page, limit, searches, orders);
     }
 
     @Override
@@ -187,10 +224,11 @@ public class BaseCurdServiceImpl implements BaseCurdService {
      * @param page                        页码
      * @param limit                       页码大小
      * @param searches                    搜索条件
+     * @param orders                      排序
      * @return 查询结果
      */
-    private HttpResult<List<?>> retrieve(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, long page, long limit, List<Search> searches) {
-        Wrapper wrapper = this.getWrapper(searches);
+    private HttpResult<List<?>> retrieve(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, long page, long limit, List<Search> searches, List<OrderItem> orders) {
+        Wrapper wrapper = this.getWrapper(searches, orders);
         HttpResult.Build<List<?>> build = HttpResult.Build.getInstance();
         if (wrapper == null) {
             return HttpResult.error("搜索条件出错");
@@ -213,7 +251,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
      * @return 搜索结果
      */
     private HttpResult deleteBySearch(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, List<Search> searches) {
-        Wrapper wrapper = this.getWrapper(searches);
+        Wrapper wrapper = this.getWrapper(searches, Collections.emptyList());
         if (wrapper == null || CollectionUtils.isEmpty(searches)) {
             return HttpResult.error("搜索条件为空");
         }
@@ -231,7 +269,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
      * @param searches 搜索对象
      * @return mp搜索条件
      */
-    private Wrapper getWrapper(List<Search> searches) {
+    private Wrapper getWrapper(List<Search> searches, List<OrderItem> orders) {
         QueryWrapper<Object> query = Wrappers.query();
         for (Search search : searches) {
             //判断是否是日期格式需要转换
@@ -269,6 +307,17 @@ public class BaseCurdServiceImpl implements BaseCurdService {
                 }
 
             }
+        }
+
+        //排序
+        if (!org.springframework.util.CollectionUtils.isEmpty(orders)) {
+            orders.forEach(orderItem -> {
+                if (orderItem.isAsc()) {
+                    query.orderByAsc(orderItem.getColumn());
+                } else {
+                    query.orderByDesc(orderItem.getColumn());
+                }
+            });
         }
         return query;
     }

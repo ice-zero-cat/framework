@@ -1,5 +1,6 @@
 package github.com.icezerocat.mybatismp.page;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import github.com.icezerocat.mybatismp.model.Search;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,4 +45,7 @@ public class SearchPageRequest extends PageRequest implements Serializable {
      */
     @ApiModelProperty("搜索")
     private List<Search> searches = Collections.emptyList();
+
+    @ApiModelProperty("排序")
+    private List<OrderItem> orders = new ArrayList<>();
 }

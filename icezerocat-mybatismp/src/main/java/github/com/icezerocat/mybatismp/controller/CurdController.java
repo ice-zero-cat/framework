@@ -89,7 +89,7 @@ public class CurdController {
      */
     @ApiOperation("插入数据")
     @PostMapping("createByTable")
-    public HttpResult createByTable(@RequestParam String tableName, @RequestBody List<Object> objectList) {
+    public HttpResult createByTable(@RequestParam String tableName, @RequestBody List<Map<String, Object>> objectList) {
         log.debug("父类对象接收结果：{}", objectList);
         return HttpResult.ok(this.baseCurdService.saveOrUpdateBatchByTableName(tableName, objectList));
     }
@@ -125,7 +125,8 @@ public class CurdController {
                 tableName,
                 searchPageRequest.getPageNum(),
                 searchPageRequest.getPageSize(),
-                searchPageRequest.getSearches()
+                searchPageRequest.getSearches(),
+                searchPageRequest.getOrders()
         );
         List list = retrieve.getData() == null ? new ArrayList() : (List) retrieve.getData();
         PageResult pageResult = PageResult.getPageResult(list, retrieve.getCount(), searchPageRequest);
@@ -147,7 +148,8 @@ public class CurdController {
                 entityName,
                 searchPageRequest.getPageNum(),
                 searchPageRequest.getPageSize(),
-                searchPageRequest.getSearches());
+                searchPageRequest.getSearches(),
+                searchPageRequest.getOrders());
         PageResult pageResult = PageResult.getPageResult(retrieve.getData(),
                 retrieve.getCount(), searchPageRequest);
         return HttpResult.ok(pageResult);
@@ -182,14 +184,14 @@ public class CurdController {
     /**
      * 删除根据已有对象，搜索删除（自定义对象）
      *
-     * @param entityName bean名
+     * @param beanName bean名
      * @param searches   搜索条件
      * @return 删除结果 int
      */
     @ApiOperation("删除根据已有对象，搜索删除（自定义对象）")
-    @DeleteMapping("deleteByEntitySearch")
-    public HttpResult deleteByEntitySearch(@RequestParam String entityName, @RequestBody List<Search> searches) {
-        return this.baseCurdService.deleteByEntitySearch(entityName, searches);
+    @DeleteMapping("deleteByBeanSearch")
+    public HttpResult deleteByBeanSearch(@RequestParam String beanName, @RequestBody List<Search> searches) {
+        return this.baseCurdService.deleteByEntitySearch(beanName, searches);
     }
 
     /**

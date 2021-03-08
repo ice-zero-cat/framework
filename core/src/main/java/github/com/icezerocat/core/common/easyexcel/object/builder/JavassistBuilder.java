@@ -29,7 +29,7 @@ public class JavassistBuilder {
     public static final String PACKAGE_NAME = "github.com.icezerocat.ap.";
     public static final String DIRECTORY_NAME = "apTarget/classes";
     private CtClass ctClass;
-    private static StringBuilder fieldBuilder = new StringBuilder();
+    /*private static StringBuilder fieldBuilder = new StringBuilder();*/
 
     /**
      * 创建构建类build
@@ -151,9 +151,9 @@ public class JavassistBuilder {
             log.debug("writeFileByClass:{}", classSysPath);
             try {
                 //添加toString方法。
-                String body = "{\n\t\t" + fieldBuilder.toString() + ";\n\t\t" + "return sb.toString();" + "\n}";
+                /*String body = "{\n\t\t" + fieldBuilder.toString() + ";\n\t\t" + "return sb.toString();" + "\n}";
                 BuildMethod buildMethod = new BuildMethod(this.ctClass);
-                buildMethod.addMethod(ClassPool.getDefault().get(String.class.getName()), "toString", new CtClass[]{}, body).addAnnotation(Override.class).commitAnnotation();
+                buildMethod.addMethod(ClassPool.getDefault().get(String.class.getName()), "toString", new CtClass[]{}, body).addAnnotation(Override.class).commitAnnotation();*/
 
                 //输出class文件
                 this.ctClass.writeFile(classSysPath);
@@ -164,7 +164,7 @@ public class JavassistBuilder {
                 return ClassUtils.searchClassByClassName(
                         classSysPath,
                         this.ctClass.getName(), Thread.currentThread().getContextClassLoader().getParent());
-            } catch (IOException | CannotCompileException | ClassNotFoundException | NotFoundException | NoSuchMethodException e) {
+            } catch (IOException | CannotCompileException | ClassNotFoundException | NoSuchMethodException e) {
                 log.error("Javassist生成class出错：{}", e.getMessage());
                 e.printStackTrace();
                 return null;
@@ -243,13 +243,13 @@ public class JavassistBuilder {
             this.constPool = ctClass.getClassFile().getConstPool();
 
             //初始化字段
-            fieldBuilder = new StringBuilder();
+            /*fieldBuilder = new StringBuilder();
             fieldBuilder.append("StringBuffer sb = new StringBuffer(); \n\t\t")
                     .append("sb.append(\"\\n\")\n\t\t")
                     .append(".append(\"[")
                     .append(ctClass.getName())
                     .append("]\")\n\t\t")
-                    .append(".append(\"\\n\\t\")");
+                    .append(".append(\"\\n\\t\")");*/
 
         }
 
@@ -273,7 +273,7 @@ public class JavassistBuilder {
                 //初始化
                 this.modifiers = Modifier.PRIVATE;
                 //toString字段
-                fieldBuilder.append("\n\t\t.append(")
+                /*fieldBuilder.append("\n\t\t.append(")
                         .append("\"")
                         .append(fieldName)
                         .append(":")
@@ -281,7 +281,7 @@ public class JavassistBuilder {
                         .append(".append(this.")
                         .append(fieldName)
                         .append(")\n\t\t")
-                        .append(".append(\"\\n\\t\")");
+                        .append(".append(\"\\n\\t\")");*/
 
             } catch (CannotCompileException | NotFoundException e) {
                 e.printStackTrace();

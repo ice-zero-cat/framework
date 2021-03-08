@@ -55,7 +55,7 @@ public class StringUtil {
     }
 
     /**
-     * 下划线，转换为驼峰式
+     * 下划线，转换为驼峰式（APP_ID = APPID）
      *
      * @param underscoreName 下划线命名
      * @return 驼峰法命名
@@ -115,7 +115,7 @@ public class StringUtil {
     }
 
     /**
-     * 下划线转驼峰法-其他字符不变
+     * 下划线转驼峰法-其他字符不变(APP_ID=appId)
      *
      * @param line 源字符串
      * @return 转换后的字符串
@@ -140,7 +140,7 @@ public class StringUtil {
     }
 
     /**
-     * 驼峰法转下划线-修改其他字符为小写
+     * 驼峰法转下划线-修改其他字符为小写(APP_ID=a_p_p_i_d)
      *
      * @param line 源字符串
      * @return 转换后的字符串

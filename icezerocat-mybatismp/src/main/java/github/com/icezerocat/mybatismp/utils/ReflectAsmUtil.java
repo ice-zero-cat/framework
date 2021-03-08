@@ -2,7 +2,6 @@ package github.com.icezerocat.mybatismp.utils;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.google.common.collect.Maps;
-import github.com.icezerocat.core.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -140,9 +139,9 @@ public class ReflectAsmUtil {
                     value = Long.valueOf(String.valueOf(value));
                 }
                 //处理LocalDateTime类型
-                if (field.getType().toString().contains("Date")) {
+                /*if (field.getType().toString().contains("Date")) {
                     value = DateUtil.parseDate(String.valueOf(value));
-                }
+                }*/
                 toMethodAccess.invoke(target, "set" + StringUtils.capitalize(name), value);
             } catch (Exception e) {
                 // 设置异常，可能会没有对应字段，忽略

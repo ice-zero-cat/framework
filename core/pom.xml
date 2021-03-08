@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>core</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.9</version>
     <name>core</name>
     <description>核心类</description>
 

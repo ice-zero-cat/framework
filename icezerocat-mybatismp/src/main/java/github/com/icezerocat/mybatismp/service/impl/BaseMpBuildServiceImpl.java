@@ -1,6 +1,7 @@
 package github.com.icezerocat.mybatismp.service.impl;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -123,18 +124,20 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         for (Map<String, String> fieldData : mapList) {
             //字段下划线转驼峰法
             String sourceField = fieldData.get(Table.FIELD);
-            String field = StringUtil.underlineToCamelCase(sourceField);
+            String field = StringUtil.underline2Camel(sourceField);
             String fieldType = fieldData.get(Table.FIELDTYPE);
             String javaFieldType = SqlToJava.toSqlToJavaObjStr(fieldType);
 
             //id小写
             if ("ID".equals(field.toUpperCase())) {
                 field = "id";
+                buildField.addField(javaFieldType, field);
+                buildField.addAnnotation(TableId.class).addMemberValue("value", sourceField).commitAnnotation();
+            }else {
+                //添加myBatis字段和注解
+                buildField.addField(javaFieldType, field);
+                buildField.addAnnotation(TableField.class).addMemberValue("value", sourceField).commitAnnotation();
             }
-
-            //添加myBatis字段和注解
-            buildField.addField(javaFieldType, field);
-            buildField.addAnnotation(TableField.class).addMemberValue("value", sourceField).commitAnnotation();
         }
         oClass = buildClass.writeFile();
         Object o = null;
