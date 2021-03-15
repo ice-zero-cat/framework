@@ -276,7 +276,8 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      *
      * @return 绝对路径
      */
-    private String getSaveClassPath() {
+    @Override
+    public String getSaveClassPath() {
         return ZeroWebConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
     }
 }

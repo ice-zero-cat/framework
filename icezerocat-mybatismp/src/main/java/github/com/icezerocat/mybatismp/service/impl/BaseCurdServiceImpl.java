@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
 import github.com.icezerocat.core.http.HttpResult;
+import github.com.icezerocat.core.utils.ClassUtils;
 import github.com.icezerocat.core.utils.DateUtil;
 import github.com.icezerocat.core.utils.StringUtil;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -112,11 +114,16 @@ public class BaseCurdServiceImpl implements BaseCurdService {
 
     @Override
     public HttpResult saveOrUpdateBatchByTableName(String tableName, List<Map<String, Object>> objectList) {
+        tableName = tableName.toLowerCase();
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
         String entityName = JavassistBuilder.PACKAGE_NAME + org.springframework.util.StringUtils.capitalize(StringUtil.underlineToCamelCase(tableName));
         boolean insert;
         try {
-            Class aClass = Class.forName(entityName);
+            Class aClass =ClassUtils.searchClassByClassName(this.baseMpBuildService.getSaveClassPath(), entityName, Thread.currentThread().getContextClassLoader().getParent());
+            if (aClass == null){
+                log.error("加载外部对象出错:" + entityName);
+                return HttpResult.error("加载外部对象出错:" + entityName);
+            }
 
             List<Object> objects = new ArrayList<>();
             for (Map<String, Object> map : objectList) {
@@ -126,11 +133,17 @@ public class BaseCurdServiceImpl implements BaseCurdService {
             }
             insert = baseMapperObjectNoahService.saveOrUpdateBatch(objects);
         } catch (ClassNotFoundException e) {
+            log.error("找不到类:" + entityName);
             e.printStackTrace();
             return HttpResult.error("找不到类:" + entityName);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
+            log.error("创建对象失败:" + entityName);
             return HttpResult.error("创建对象失败:" + entityName);
+        } catch (NoSuchMethodException | MalformedURLException e) {
+            log.error("加载外部对象出错:" + entityName);
+            e.printStackTrace();
+            return HttpResult.error("加载外部对象出错:" + entityName);
         }
         return HttpResult.ok(insert);
     }
