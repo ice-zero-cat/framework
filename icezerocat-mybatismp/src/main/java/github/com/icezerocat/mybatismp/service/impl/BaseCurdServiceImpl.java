@@ -119,8 +119,8 @@ public class BaseCurdServiceImpl implements BaseCurdService {
         String entityName = JavassistBuilder.PACKAGE_NAME + org.springframework.util.StringUtils.capitalize(StringUtil.underlineToCamelCase(tableName));
         boolean insert;
         try {
-            Class aClass =ClassUtils.searchClassByClassName(this.baseMpBuildService.getSaveClassPath(), entityName, Thread.currentThread().getContextClassLoader().getParent());
-            if (aClass == null){
+            Class aClass = ClassUtils.searchClassByClassName(this.baseMpBuildService.getSaveClassPath(), entityName, Thread.currentThread().getContextClassLoader().getParent());
+            if (aClass == null) {
                 log.error("加载外部对象出错:" + entityName);
                 return HttpResult.error("加载外部对象出错:" + entityName);
             }
@@ -154,6 +154,11 @@ public class BaseCurdServiceImpl implements BaseCurdService {
     }
 
     @Override
+    public HttpResult<List<?>> retrieveAllByTableName(String tableName) {
+        return this.retrieveByTableName(tableName, -1, -1, Collections.emptyList());
+    }
+
+    @Override
     public HttpResult<List<?>> retrieveByTableName(String tableName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
         return this.retrieve(baseMapperObjectNoahService, page, limit, searches, orders);
@@ -163,6 +168,12 @@ public class BaseCurdServiceImpl implements BaseCurdService {
     public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches) {
         return this.retrieveByEntity(entityName, page, limit, searches, Collections.emptyList());
     }
+
+    @Override
+    public HttpResult<List<?>> retrieveAllByEntity(String entityName) {
+        return this.retrieveByEntity(entityName, -1, -1, Collections.emptyList());
+    }
+
 
     @Override
     public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches, List<OrderItem> orders) {

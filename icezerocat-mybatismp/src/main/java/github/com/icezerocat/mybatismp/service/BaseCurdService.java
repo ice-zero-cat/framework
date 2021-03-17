@@ -82,6 +82,14 @@ public interface BaseCurdService {
      * 查询
      *
      * @param tableName 表名
+     * @return 查询结果
+     */
+    HttpResult<List<?>> retrieveAllByTableName(String tableName);
+
+    /**
+     * 查询
+     *
+     * @param tableName 表名
      * @param page      页码
      * @param limit     每一页大小
      * @param searches  搜索条件
@@ -100,6 +108,14 @@ public interface BaseCurdService {
      * @return 查询结果
      */
     HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches);
+
+    /**
+     * 根据已有对象进行查询全部数据
+     *
+     * @param entityName 对象名
+     * @return 查询结果
+     */
+    HttpResult<List<?>> retrieveAllByEntity(String entityName);
 
     /**
      * 根据已有对象进行查询

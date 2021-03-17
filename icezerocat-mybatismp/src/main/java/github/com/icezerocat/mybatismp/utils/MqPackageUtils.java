@@ -21,9 +21,14 @@ public class MqPackageUtils {
      * 获取项目包名
      *
      * @return 项目包名
+     * @throws ClassNotFoundException 找不到调用类
      */
-    public static String getProjectPackName() {
-        Package pack = MqPackageUtils.class.getPackage();
+    private static String getProjectPackName() throws ClassNotFoundException {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement stackTraceElement = stackTrace[6];
+        String className = stackTraceElement.getClassName();
+        Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+        Package pack = aClass.getPackage();
         String packName = pack.getName();
         do {
             packName = packName.substring(0, packName.lastIndexOf("."));
@@ -41,7 +46,12 @@ public class MqPackageUtils {
     public static Class<?> getMqClassByName(String entityName) {
         entityName = StringUtils.capitalize(entityName);
         if (reflections == null) {
-            reflections = new Reflections(getProjectPackName());
+            try {
+                reflections = new Reflections(getProjectPackName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         Set<Class<? extends BaseMpEntity>> classBySuper = reflections.getSubTypesOf(BaseMpEntity.class);
         if (classBySuper != null) {
