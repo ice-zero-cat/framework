@@ -1,6 +1,7 @@
 package github.com.icezerocat.mybatismp.utils;
 
 import github.com.icezerocat.mybatismp.base.BaseMpEntity;
+import lombok.SneakyThrows;
 import org.reflections.Reflections;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 public class MqPackageUtils {
 
     private static Reflections reflections;
+    public static String PACKAGE_NAME;
 
     /**
      * 获取项目包名
@@ -23,9 +25,9 @@ public class MqPackageUtils {
      * @return 项目包名
      * @throws ClassNotFoundException 找不到调用类
      */
-    private static String getProjectPackName() throws ClassNotFoundException {
+    private static String getProjectPackName(int stackTraceIndex) throws ClassNotFoundException {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement stackTraceElement = stackTrace[6];
+        StackTraceElement stackTraceElement = stackTrace[stackTraceIndex];
         String className = stackTraceElement.getClassName();
         Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass(className);
         Package pack = aClass.getPackage();
@@ -43,17 +45,34 @@ public class MqPackageUtils {
      * @param entityName 实体类简称
      * @return 实体类
      */
+    @SneakyThrows
     public static Class<?> getMqClassByName(String entityName) {
         entityName = StringUtils.capitalize(entityName);
+        int stackTraceIndex = 5;
         if (reflections == null) {
             try {
-                reflections = new Reflections(getProjectPackName());
+                PACKAGE_NAME = PACKAGE_NAME != null ? PACKAGE_NAME : getProjectPackName(stackTraceIndex);
+                reflections = new Reflections(PACKAGE_NAME);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 return null;
             }
         }
         Set<Class<? extends BaseMpEntity>> classBySuper = reflections.getSubTypesOf(BaseMpEntity.class);
+        if (classBySuper != null && classBySuper.size() <= 0) {
+            for (; stackTraceIndex < 20; stackTraceIndex++) {
+                PACKAGE_NAME = getProjectPackName(stackTraceIndex);
+                reflections = new Reflections(PACKAGE_NAME);
+                classBySuper = reflections.getSubTypesOf(BaseMpEntity.class);
+                if (classBySuper != null && classBySuper.size() > 0) {
+                    break;
+                }
+            }
+            if (classBySuper != null && classBySuper.size() <= 0) {
+                reflections = new Reflections();
+                classBySuper = reflections.getSubTypesOf(BaseMpEntity.class);
+            }
+        }
         if (classBySuper != null) {
             for (Class<?> c : classBySuper) {
                 String simpleName = c.getSimpleName();
