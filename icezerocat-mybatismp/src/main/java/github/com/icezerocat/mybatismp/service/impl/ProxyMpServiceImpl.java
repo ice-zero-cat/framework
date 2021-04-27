@@ -1,8 +1,8 @@
 package github.com.icezerocat.mybatismp.service.impl;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
-import github.com.icezerocat.core.config.ZeroWebConfig;
+import com.github.icezerocat.component.core.config.ProjectPathConfig;
+import com.github.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -264,7 +264,7 @@ public class ProxyMpServiceImpl implements ProxyMpService {
         try {
             //自定义系统资源路径
             packageSearchPath = packageSearchPath.replaceAll("\\.", "/");
-            String path = ZeroWebConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME + File.separator + packageSearchPath + ".class";
+            String path = ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME + File.separator + packageSearchPath + ".class";
             resources = getResourcePatternResolver().getResources(path);
             for (org.springframework.core.io.Resource resource : resources) {
                 MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);

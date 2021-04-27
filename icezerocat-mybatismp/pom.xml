@@ -8,7 +8,7 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>icezerocat-mybatismp</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <name>icezerocat-mybatismp</name>
     <description>mybatisMp 动态注入</description>
 
@@ -18,35 +18,13 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <guava.version>29.0-jre</guava.version>
         <byte-buddy.version>1.10.14</byte-buddy.version>
-        <zero-core.version>0.0.9</zero-core.version>
+        <component-common.version>0.0.1</component-common.version>
         <reflections.version>0.9.12</reflections.version>
+        <component-core-spring-boot-starter.version>0.0.1</component-core-spring-boot-starter.version>
+        <component-db-spring-boot-starter.version>0.0.1</component-db-spring-boot-starter.version>
     </properties>
 
     <dependencies>
-
-        <!-- swagger -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox-swagger-ui.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox-swagger-ui.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!--mybatisPlus-->
         <dependency>
@@ -82,18 +60,32 @@
             <version>${byte-buddy.version}</version>
         </dependency>
 
-        <!-- core -->
-        <dependency>
-            <groupId>com.github.ice-zero-cat</groupId>
-            <artifactId>core</artifactId>
-            <version>${zero-core.version}</version>
-        </dependency>
-
         <!--reflections-->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>${reflections.version}</version>
+        </dependency>
+
+        <!--common模块-->
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-common</artifactId>
+            <version>${component-common.version}</version>
+        </dependency>
+
+        <!--core模块-->
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-core-spring-boot-starter</artifactId>
+            <version>${component-core-spring-boot-starter.version}</version>
+        </dependency>
+
+        <!--db模块-->
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-db-spring-boot-starter</artifactId>
+            <version>${component-db-spring-boot-starter.version}</version>
         </dependency>
     </dependencies>
 

@@ -5,15 +5,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import github.com.icezerocat.core.common.easyexcel.object.Table;
-import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
-import github.com.icezerocat.core.config.ZeroWebConfig;
-import github.com.icezerocat.core.service.DbService;
-import github.com.icezerocat.core.utils.ClassUtils;
-import github.com.icezerocat.core.utils.SqlToJava;
-import github.com.icezerocat.core.utils.StringUtil;
+import com.github.icezerocat.component.common.easyexcel.object.Table;
+import com.github.icezerocat.component.common.utils.ClassUtils;
+import com.github.icezerocat.component.common.utils.SqlToJava;
+import com.github.icezerocat.component.common.utils.StringUtil;
+import com.github.icezerocat.component.core.config.ProjectPathConfig;
+import com.github.icezerocat.component.db.builder.JavassistBuilder;
+import com.github.icezerocat.component.db.service.DbService;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
-import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
+import github.com.icezerocat.mybatismp.config.MpApplicationContextHelper;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +87,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         if (!entityBaseMapperMap.containsKey(t.getClass())) {
             //判断class缓存是否已经初始化过
             String beanName = StringUtils.uncapitalize(this.getServiceName(t.getClass()));
-            Object bean = ApplicationContextHelper.getBean(beanName);
+            Object bean = MpApplicationContextHelper.getBean(beanName);
             if (bean != null) {
                 entityBaseMapperMap.put(t.getClass(), bean);
             } else {
@@ -113,14 +113,14 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     private Object generateEntity(String tableName) {
         Class oClass;
         List<Map<String, String>> mapList = this.dbService.getTableField(tableName);
-        github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder javassistBuilder = new github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder();
+        JavassistBuilder javassistBuilder = new JavassistBuilder();
         //构建类
-        github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder.BuildClass buildClass =
+        JavassistBuilder.BuildClass buildClass =
                 javassistBuilder.newBuildClass(StringUtils.capitalize(StringUtil.underlineToCamelCase(tableName))).setInterfaces(Serializable.class);
         buildClass.buildAnnotations(TableName.class).addMemberValue("value", tableName.toLowerCase()).commitAnnotation();
 
         //构建字段
-        github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder.BuildField buildField = javassistBuilder.newBuildField();
+        JavassistBuilder.BuildField buildField = javassistBuilder.newBuildField();
         for (Map<String, String> fieldData : mapList) {
             //字段下划线转驼峰法
             String sourceField = fieldData.get(Table.FIELD);
@@ -278,6 +278,6 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      */
     @Override
     public String getSaveClassPath() {
-        return ZeroWebConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
+        return ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
     }
 }

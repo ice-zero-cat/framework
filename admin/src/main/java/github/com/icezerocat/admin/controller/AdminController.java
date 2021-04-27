@@ -1,10 +1,10 @@
 package github.com.icezerocat.admin.controller;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.icezerocat.component.common.http.HttpResult;
+import com.github.icezerocat.component.db.config.DruidConfig;
+import com.github.icezerocat.component.db.service.DbService;
 import github.com.icezerocat.admin.entity.OzapSalesErpInfo;
-import github.com.icezerocat.core.config.DruidConfig;
-import github.com.icezerocat.core.http.HttpResult;
-import github.com.icezerocat.core.service.DbService;
 import github.com.icezerocat.core.utils.DaoUtil;
 import github.com.icezerocat.jdbctemplate.service.BaseJdbcTemplate;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ProjectName: [framework]
@@ -73,6 +74,9 @@ public class AdminController {
     public HttpResult mpBuild() {
         NoahServiceImpl<BaseMapper<Object>, Object> noahService = this.baseMpBuildService.newInstance("oz_ap_def_event");
         log.debug("数据总数：{}", noahService.count());
+        List<Object> list = noahService.list();
+        log.debug("{}", list);
         return HttpResult.ok(noahService.count());
     }
+
 }

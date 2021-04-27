@@ -8,7 +8,7 @@
         <version>0.0.1</version>
     </parent>
     <artifactId>admin</artifactId>
-    <version>0.0.3</version>
+    <version>1.0.0</version>
     <name>admin</name>
     <description>启动模块</description>
 
@@ -24,10 +24,10 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <!-- core -->
-        <dependency>
+        <!--<dependency>
             <groupId>github.com.ice-zero-cat</groupId>
             <artifactId>core</artifactId>
-        </dependency>
+        </dependency>-->
         <!--jpa模块-->
         <dependency>
             <groupId>github.com.ice-zero-cat</groupId>
@@ -39,11 +39,23 @@
             <artifactId>jdbc-template</artifactId>
         </dependency>
         <!-- mybatisPlus -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.github.ice-zero-cat</groupId>
             <artifactId>icezerocat-mybatismp</artifactId>
             <version>0.1.1</version>
+        </dependency>-->
+
+        <!--mybatisPlus-->
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-mp-spring-boot-starte</artifactId>
+            <version>2.0.0</version>
         </dependency>
+        <!--<dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-core-spring-boot-starter</artifactId>
+            <version>0.0.1</version>
+        </dependency>-->
     </dependencies>
 
     <build>

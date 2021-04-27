@@ -10,13 +10,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import github.com.icezerocat.core.common.easyexcel.object.builder.JavassistBuilder;
-import github.com.icezerocat.core.http.HttpResult;
-import github.com.icezerocat.core.utils.ClassUtils;
-import github.com.icezerocat.core.utils.DateUtil;
-import github.com.icezerocat.core.utils.StringUtil;
+import com.github.icezerocat.component.common.http.HttpResult;
+import com.github.icezerocat.component.common.utils.ClassUtils;
+import com.github.icezerocat.component.common.utils.DateUtil;
+import com.github.icezerocat.component.common.utils.StringUtil;
+import com.github.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
-import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
+import github.com.icezerocat.mybatismp.config.MpApplicationContextHelper;
 import github.com.icezerocat.mybatismp.model.Search;
 import github.com.icezerocat.mybatismp.service.BaseCurdService;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
@@ -66,7 +66,7 @@ public class BaseCurdServiceImpl implements BaseCurdService {
         if (wrapper == null) {
             return HttpResult.error("搜索条件出错");
         }
-        BaseMapper baseMapper = ApplicationContextHelper.getBean(ApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
+        BaseMapper baseMapper = MpApplicationContextHelper.getBean(MpApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
         if (page > -1 && limit > -1) {
             Page ipage = new Page(page, limit);
             return HttpResult.ok(baseMapper.selectPage(ipage, wrapper));
@@ -77,16 +77,16 @@ public class BaseCurdServiceImpl implements BaseCurdService {
 
     @Override
     public HttpResult delete(String beanName, List<Long> ids) {
-        BaseMapper baseMapper = ApplicationContextHelper.getBean(ApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
+        BaseMapper baseMapper = MpApplicationContextHelper.getBean(MpApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
         return HttpResult.ok(baseMapper.deleteBatchIds(ids));
     }
 
     @Override
     public HttpResult saveOrUpdateBatch(String beanName, String entityName, List<Map<String, Object>> mapList) {
         entityName = org.springframework.util.StringUtils.uncapitalize(entityName);
-        beanName = ApplicationContextHelper.getBeanName(beanName);
+        beanName = MpApplicationContextHelper.getBeanName(beanName);
         boolean insert = false;
-        ServiceImpl service = ApplicationContextHelper.getBean(org.springframework.util.StringUtils.uncapitalize(beanName), ServiceImpl.class);
+        ServiceImpl service = MpApplicationContextHelper.getBean(org.springframework.util.StringUtils.uncapitalize(beanName), ServiceImpl.class);
         try {
             if (packageName == null && ObjectUtils.isNotEmpty(traversePackage)) {
                 packageName = PackageUtil.getClassNameMap(traversePackage);

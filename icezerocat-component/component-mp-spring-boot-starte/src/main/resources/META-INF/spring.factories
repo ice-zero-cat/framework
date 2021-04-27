@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  github.com.icezerocat.mybatismp.config.MpApplicationContextHelper,\
+  github.com.icezerocat.mybatismp.config.MybatisPlusConfig,\
+  github.com.icezerocat.mybatismp.service.impl.BaseCurdServiceImpl,\
+  github.com.icezerocat.mybatismp.service.impl.BaseMpBuildServiceImpl,\
+  github.com.icezerocat.mybatismp.service.impl.ProxyMpServiceImpl,\
+  github.com.icezerocat.mybatismp.controller.CurdController,\
+  github.com.icezerocat.mybatismp.controller.MpController
