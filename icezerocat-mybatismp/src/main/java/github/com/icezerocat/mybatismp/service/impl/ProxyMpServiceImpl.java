@@ -1,8 +1,8 @@
 package github.com.icezerocat.mybatismp.service.impl;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.icezerocat.component.core.config.ProjectPathConfig;
-import com.github.icezerocat.component.db.builder.JavassistBuilder;
+import github.com.icezerocat.component.core.config.ProjectPathConfig;
+import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;

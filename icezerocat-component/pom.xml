@@ -22,6 +22,6 @@
         <module>component-db-spring-boot-starter</module>
         <!--mybatis-plus-->
         <module>../icezerocat-mybatismp</module>
-        <module>component-mp-spring-boot-starte</module>
+        <module>component-mp-spring-boot-starter</module>
     </modules>
 </project>

@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.github.icezerocat.component.common.utils.StringUtil;
+import github.com.icezerocat.component.common.utils.StringUtil;
 import github.com.icezerocat.mybatismp.annotations.MultipleTableId;
 import github.com.icezerocat.mybatismp.common.enums.NoahSqlMethod;
 import lombok.Data;

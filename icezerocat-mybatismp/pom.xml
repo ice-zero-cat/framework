@@ -13,14 +13,11 @@
     <description>mybatisMp 动态注入</description>
 
     <properties>
-        <springfox-swagger-ui.version>2.9.2</springfox-swagger-ui.version>
         <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <guava.version>29.0-jre</guava.version>
         <byte-buddy.version>1.10.14</byte-buddy.version>
-        <component-common.version>0.0.1</component-common.version>
         <reflections.version>0.9.12</reflections.version>
-        <component-core-spring-boot-starter.version>0.0.1</component-core-spring-boot-starter.version>
         <component-db-spring-boot-starter.version>0.0.1</component-db-spring-boot-starter.version>
     </properties>
 
@@ -65,20 +62,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>${reflections.version}</version>
-        </dependency>
-
-        <!--common模块-->
-        <dependency>
-            <groupId>com.github.ice-zero-cat</groupId>
-            <artifactId>component-common</artifactId>
-            <version>${component-common.version}</version>
-        </dependency>
-
-        <!--core模块-->
-        <dependency>
-            <groupId>com.github.ice-zero-cat</groupId>
-            <artifactId>component-core-spring-boot-starter</artifactId>
-            <version>${component-core-spring-boot-starter.version}</version>
         </dependency>
 
         <!--db模块-->

@@ -2,7 +2,7 @@ package github.com.icezerocat.mybatismp.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.github.icezerocat.component.common.http.HttpResult;
+import github.com.icezerocat.component.common.http.HttpResult;
 import github.com.icezerocat.mybatismp.model.Search;
 
 import java.util.List;

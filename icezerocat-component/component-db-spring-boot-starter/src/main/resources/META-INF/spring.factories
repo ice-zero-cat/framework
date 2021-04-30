@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.github.icezerocat.component.db.config.DruidConfig,\
-  com.github.icezerocat.component.db.config.DruidDataSourceProperties,\
-  com.github.icezerocat.component.db.config.ExcelDbConfig,\
-  com.github.icezerocat.component.db.service.impl.DbServiceImpl,\
-  com.github.icezerocat.component.db.service.impl.ClassServiceImpl
+  github.com.icezerocat.component.db.config.DruidConfig,\
+  github.com.icezerocat.component.db.config.DruidDataSourceProperties,\
+  github.com.icezerocat.component.db.config.ExcelDbConfig,\
+  github.com.icezerocat.component.db.service.impl.DbServiceImpl,\
+  github.com.icezerocat.component.db.service.impl.ClassServiceImpl

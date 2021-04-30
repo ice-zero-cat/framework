@@ -1,8 +1,8 @@
 package github.com.icezerocat.mybatismp.controller;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.icezerocat.component.common.http.HttpResult;
-import com.github.icezerocat.component.common.http.HttpStatus;
+import github.com.icezerocat.component.common.http.HttpResult;
+import github.com.icezerocat.component.common.http.HttpStatus;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.mybatismp.config.MpApplicationContextHelper;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
