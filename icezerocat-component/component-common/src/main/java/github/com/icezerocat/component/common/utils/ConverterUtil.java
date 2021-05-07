@@ -1,4 +1,4 @@
-package github.com.icezerocat.core.utils;
+package github.com.icezerocat.component.common.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
