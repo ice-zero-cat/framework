@@ -1,10 +1,10 @@
 package github.com.icezerocat.mybatismp.controller;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.com.icezerocat.core.http.HttpResult;
-import github.com.icezerocat.core.http.HttpStatus;
+import github.com.icezerocat.component.common.http.HttpResult;
+import github.com.icezerocat.component.common.http.HttpStatus;
 import github.com.icezerocat.mybatismp.common.mybatisplus.NoahServiceImpl;
-import github.com.icezerocat.mybatismp.config.ApplicationContextHelper;
+import github.com.icezerocat.mybatismp.config.MpApplicationContextHelper;
 import github.com.icezerocat.mybatismp.service.BaseMpBuildService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +42,7 @@ public class MpController {
         return HttpResult.Build.getInstance()
                 .setCode(HttpStatus.SC_OK)
                 .setCount(baseMapperObjectNoahService.count())
-                .setData(ApplicationContextHelper.getBeanNameByClass(baseMapperObjectNoahService.getClass()))
+                .setData(MpApplicationContextHelper.getBeanNameByClass(baseMapperObjectNoahService.getClass()))
                 .setMsg("data:表单对应的service。 count：表单数据总数")
                 .complete();
     }

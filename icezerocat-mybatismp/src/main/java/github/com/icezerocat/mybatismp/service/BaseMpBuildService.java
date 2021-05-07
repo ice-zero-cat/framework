@@ -29,4 +29,10 @@ public interface BaseMpBuildService {
      */
     <T> NoahServiceImpl<BaseMapper<T>, T> newInstance(T t);
 
+    /**
+     * 获取保存路径
+     *
+     * @return 绝对路径
+     */
+    String getSaveClassPath();
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.ice-zero-cat</groupId>
+        <artifactId>icezerocat-component</artifactId>
+        <version>0.0.1</version>
+    </parent>
+    <artifactId>component-mp-spring-boot-starter</artifactId>
+    <version>2.0.0</version>
+    <name>component-mp-spring-boot-starter</name>
+    <description>mybatis-plus</description>
+    <properties>
+        <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
+        <byte-buddy.version>1.10.14</byte-buddy.version>
+        <component-db-spring-boot-starter.version>0.0.1</component-db-spring-boot-starter.version>
+    </properties>
+
+    <dependencies>
+
+        <!--mybatisPlus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus-boot-starter.version}</version>
+        </dependency>
+
+        <!-- 类构建反射reflectasm -->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>reflectasm</artifactId>
+        </dependency>
+
+        <!--bytebuddy-->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
+        </dependency>
+
+        <!--db模块-->
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-db-spring-boot-starter</artifactId>
+            <version>${component-db-spring-boot-starter.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

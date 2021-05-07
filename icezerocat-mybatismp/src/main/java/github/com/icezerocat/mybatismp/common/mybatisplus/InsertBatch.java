@@ -24,7 +24,7 @@ public class InsertBatch extends AbstractMethod {
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         KeyGenerator keyGenerator = new NoKeyGenerator();
         NoahSqlMethod sqlMethod = NoahSqlMethod.INSERT_BATCH;
-        String columnScript = SqlScriptUtils.convertTrim(tableInfo.getAllInsertSqlColumnMaybeIf(),
+        String columnScript = SqlScriptUtils.convertTrim(tableInfo.getAllInsertSqlColumnMaybeIf(null),
                 LEFT_BRACKET, RIGHT_BRACKET, null, COMMA);
         String valuesScript = SqlScriptUtils.convertTrim(tableInfo.getAllInsertSqlPropertyMaybeIf(null),
                 LEFT_BRACKET, RIGHT_BRACKET, null, COMMA);
@@ -39,7 +39,7 @@ public class InsertBatch extends AbstractMethod {
                 keyColumn = tableInfo.getKeyColumn();
             } else {
                 if (null != tableInfo.getKeySequence()) {
-                    keyGenerator = TableInfoHelper.genKeyGenerator(tableInfo, builderAssistant, sqlMethod.getMethod(), languageDriver);
+                    keyGenerator = TableInfoHelper.genKeyGenerator(sqlMethod.getMethod(), tableInfo, builderAssistant);
                     keyProperty = tableInfo.getKeyProperty();
                     keyColumn = tableInfo.getKeyColumn();
                 }

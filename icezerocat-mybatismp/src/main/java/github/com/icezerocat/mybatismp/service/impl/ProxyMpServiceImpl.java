@@ -1,6 +1,8 @@
 package github.com.icezerocat.mybatismp.service.impl;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import github.com.icezerocat.component.core.config.ProjectPathConfig;
+import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.mybatismp.service.ProxyMpService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
@@ -27,6 +31,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.PatternMatchUtils;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -257,9 +262,12 @@ public class ProxyMpServiceImpl implements ProxyMpService {
         BeanDefinition beanDefinition = null;
         org.springframework.core.io.Resource[] resources;
         try {
-            resources = getResourcePatternResolver().getResources(packageSearchPath);
+            //自定义系统资源路径
+            packageSearchPath = packageSearchPath.replaceAll("\\.", "/");
+            String path = ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME + File.separator + packageSearchPath + ".class";
+            resources = getResourcePatternResolver().getResources(path);
             for (org.springframework.core.io.Resource resource : resources) {
-                MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(packageSearchPath);
+                MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
                 ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
                 sbd.setResource(resource);
                 return sbd;
@@ -305,7 +313,8 @@ public class ProxyMpServiceImpl implements ProxyMpService {
      */
     private ResourcePatternResolver getResourcePatternResolver() {
         if (this.resourcePatternResolver == null) {
-            this.resourcePatternResolver = new PathMatchingResourcePatternResolver();
+            ResourceLoader resourceLoader = new FileSystemResourceLoader();
+            this.resourcePatternResolver = new PathMatchingResourcePatternResolver(resourceLoader);
         }
         return this.resourcePatternResolver;
     }
