@@ -20,7 +20,6 @@ import java.util.*;
  * @author 0.0.0
  */
 @Slf4j
-//@Service
 @RequiredArgsConstructor
 public class DbServiceImpl implements DbService {
 

@@ -35,6 +35,7 @@ public class SqlToJava {
             case "varchar2":
             case "text":
             case "nchar":
+            case "longtext":
                 return "String";
             case "blob":
             case "image":
@@ -72,7 +73,7 @@ public class SqlToJava {
             case "timestamp":
                 return "java.sql.Timestamp";
             default:
-                log.warn("-----------------》转化失败：未发现的类型" + sqlType);
+                log.warn("-----------------》toSqlToJava转化失败：未发现的类型" + sqlType);
                 return "String";
         }
     }
@@ -95,6 +96,7 @@ public class SqlToJava {
             case "varchar2":
             case "text":
             case "nchar":
+            case "longtext":
                 return String.class.getTypeName();
             case "blob":
             case "image":
@@ -132,7 +134,7 @@ public class SqlToJava {
             case "timestamp":
                 return Timestamp.class.getTypeName();
             default:
-                log.warn("-----------------》转化失败：未发现的类型" + sqlType);
+                log.warn("-----------------》toSqlToJavaObjStr转化失败：未发现的类型" + sqlType);
                 return String.class.getTypeName();
         }
     }

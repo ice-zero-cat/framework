@@ -15,9 +15,9 @@
         <java.version>1.8</java.version>
         <org.apache.commons.fileupload.version>1.2.2.LIFERAY-PATCHED-1</org.apache.commons.fileupload.version>
         <easyexcel.version>LATEST</easyexcel.version>
-        <javassist.verison>3.27.0-GA</javassist.verison>
         <aspectjrt.verison>1.9.6</aspectjrt.verison>
         <dom4j.version>2.1.3</dom4j.version>
+        <reflections.version>0.9.12</reflections.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,6 +29,13 @@
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>reflectasm</artifactId>
+        </dependency>
+
+        <!--reflections-->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
         </dependency>
 
         <!--aspectjrt-->

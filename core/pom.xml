@@ -8,91 +8,24 @@
         <version>0.0.2</version>
     </parent>
     <artifactId>core</artifactId>
-    <version>0.0.9</version>
+    <version>0.1.1</version>
     <name>core</name>
     <description>核心类</description>
 
     <properties>
-        <org.apache.commons.fileupload.version>1.2.2.LIFERAY-PATCHED-1</org.apache.commons.fileupload.version>
-        <easyexcel.version>LATEST</easyexcel.version>
-        <javassist.verison>3.27.0-GA</javassist.verison>
-        <aspectjrt.verison>1.9.6</aspectjrt.verison>
-        <dom4j.version>2.1.3</dom4j.version>
-        <druid.version>1.1.22</druid.version>
+
+        <component-common.version>0.0.1</component-common.version>
     </properties>
 
     <dependencies>
-        <!-- 类构建反射reflectasm -->
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>reflectasm</artifactId>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-common</artifactId>
+            <version>${component-common.version}</version>
         </dependency>
 
-        <!--javassist-->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${javassist.verison}</version>
-        </dependency>
 
-        <!--aspectjrt-->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectjrt.verison}</version>
-        </dependency>
 
-        <!--dom4j-->
-        <dependency>
-            <groupId>org.dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-        </dependency>
-
-        <!--guava-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!--    fastJson    -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
-
-        <!--    导入导出依赖  -->
-        <dependency>
-            <groupId>com.liferay</groupId>
-            <artifactId>org.apache.commons.fileupload</artifactId>
-            <version>${org.apache.commons.fileupload.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>${easyexcel.version}</version>
-        </dependency>
-        <!--导入导出依赖-->
-
-        <!--lang3-->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <!-- Druid Pool -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>${druid.version}</version>
-        </dependency>
-        <!-- Druid Pool -->
     </dependencies>
 
 </project>

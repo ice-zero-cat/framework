@@ -13,7 +13,6 @@ import org.springframework.util.ObjectUtils;
  * @version 1.0
  */
 @Data
-//@Configuration
 @PropertySource(value = {
         "classpath:bootstrap.properties", "classpath:bootstrap.yml",
         "classpath:application.properties", "classpath:application.yml"},

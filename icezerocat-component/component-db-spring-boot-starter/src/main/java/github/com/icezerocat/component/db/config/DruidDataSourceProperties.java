@@ -3,22 +3,21 @@ package github.com.icezerocat.component.db.config;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-
-import javax.annotation.Resource;
 
 /**
  * ProjectName: [icezero-system]
  * Package:     [com.githup.icezerocat.admin.config.DruidDataSourceProperties]
  * Description: 数据源属性
- * CreateDate:  2020/4/29 14:33
+ * CreateDate:  2020/4/29 14:
  *
  * @author 0.0.0
  * @version 1.0
  */
 @Data
-//@Configuration
+@Configuration
 @PropertySources({
         @PropertySource(value = "classpath:bootstrap.properties", ignoreResourceNotFound = true),
         @PropertySource(value = "classpath:bootstrap.yml", ignoreResourceNotFound = true),
@@ -28,8 +27,13 @@ import javax.annotation.Resource;
 @ConfigurationProperties(prefix = "spring.datasource.druid")
 public class DruidDataSourceProperties {
 
-    @Resource
-    private ExcelDbConfig excelDbConfig;
+
+    private final ExcelDbConfig excelDbConfig;
+
+    @SuppressWarnings("all")
+    public DruidDataSourceProperties(ExcelDbConfig excelDbConfig) {
+        this.excelDbConfig = excelDbConfig;
+    }
 
     /**
      * druid名字
