@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>
@@ -18,10 +18,8 @@
     <modules>
         <module>admin</module>
         <module>jpa</module>
-        <module>core</module>
         <module>jdbc-template</module>
         <module>backup</module>
-        <module>icezerocat-mybatismp</module>
     </modules>
 
     <!--版本号管理-->

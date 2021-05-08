@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.3</version>
     </parent>
     <artifactId>admin</artifactId>
     <version>1.0.0</version>

@@ -1,8 +1,9 @@
 package github.com.icezerocat.component.db.builder;
 
+import com.google.common.primitives.Ints;
 import github.com.icezerocat.component.common.easyexcel.object.AnnotationMember;
 import github.com.icezerocat.component.common.easyexcel.object.builder.AnnotationBuildType;
-import com.google.common.primitives.Ints;
+import github.com.icezerocat.component.common.easyexcel.object.builder.BaseAnnotationBuild;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class FactoryAnnotationBuild {
      * @param buildField       构建Field
      * @param annotationMember 注解对象数据
      */
-    public static void addMemberValue(JavassistBuilder.BuildField buildField, AnnotationMember annotationMember) {
+    public static void addMemberValue(BaseAnnotationBuild buildField, AnnotationMember annotationMember) {
         String type = annotationMember.getType().toLowerCase();
         String[] strings = type.split("_");
         type = strings[0].toUpperCase();
@@ -42,7 +43,7 @@ public class FactoryAnnotationBuild {
      * @param member     成员名字
      * @param value      值
      */
-    private static void convert(String type, JavassistBuilder.BuildField buildField, String member, Object value) {
+    private static void convert(String type, BaseAnnotationBuild buildField, String member, Object value) {
         String s = String.valueOf(value);
         switch (AnnotationBuildType.valueOf(type)) {
             case STRING:
@@ -90,7 +91,7 @@ public class FactoryAnnotationBuild {
      * @param member     成员名字
      * @param valueList  数组值
      */
-    private static void convertArr(String type, JavassistBuilder.BuildField buildField, String member, List valueList) {
+    private static void convertArr(String type, BaseAnnotationBuild buildField, String member, List valueList) {
         switch (AnnotationBuildType.valueOf(type)) {
             case INTEGER:
                 List<Integer> integerList = new ArrayList<>();

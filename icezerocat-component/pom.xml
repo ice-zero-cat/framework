@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.3</version>
     </parent>
     <artifactId>icezerocat-component</artifactId>
     <version>0.0.1</version>
@@ -21,7 +21,6 @@
         <!--db-->
         <module>component-db-spring-boot-starter</module>
         <!--mybatis-plus-->
-        <module>../icezerocat-mybatismp</module>
         <module>component-mp-spring-boot-starter</module>
     </modules>
 </project>

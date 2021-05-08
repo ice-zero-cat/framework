@@ -3,6 +3,7 @@ package github.com.icezerocat.component.common.easyexcel.object;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,5 +26,5 @@ public class ExcelWriter implements Serializable {
     /**
      * 字段注解
      */
-    private List<FieldAnnotation> fieldAnnotationList;
+    private List<FieldAnnotation> fieldAnnotationList = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package github.com.icezerocat.component.common.easyexcel.object;
 
+import github.com.icezerocat.component.common.easyexcel.object.builder.AnnotationBuildType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,8 +21,9 @@ public class AnnotationMember implements Serializable {
     private String member = "value";
     /**
      * 类型
+     * {@link AnnotationBuildType}
      */
-    private String type = "string";
+    private String type = AnnotationBuildType.STRING.getValue();
     /**
      * 值
      */
@@ -31,4 +33,5 @@ public class AnnotationMember implements Serializable {
      * 数组值
      */
     private List<Object> valueList;
+
 }

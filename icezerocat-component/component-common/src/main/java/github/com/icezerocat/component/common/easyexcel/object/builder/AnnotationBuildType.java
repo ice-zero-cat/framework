@@ -20,7 +20,8 @@ public enum AnnotationBuildType {
     BYTE("byte"),
     CHAR("char"),
     DOUBLE("double"),
-    CLASS("class");
+    CLASS("class"),
+    ARRAY("arr");
 
     final private String value;
 
