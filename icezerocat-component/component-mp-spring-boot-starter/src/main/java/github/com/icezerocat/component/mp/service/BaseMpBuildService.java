@@ -1,10 +1,8 @@
 package github.com.icezerocat.component.mp.service;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.com.icezerocat.component.common.easyexcel.object.ExcelWriter;
+import github.com.icezerocat.component.common.model.ApClassModel;
 import github.com.icezerocat.component.mp.common.mybatisplus.NoahServiceImpl;
-
-import java.util.Map;
 
 /**
  * Description: 基础mp构建服务
@@ -18,11 +16,10 @@ public interface BaseMpBuildService {
     /**
      * 创建service实例，自定义实体类
      *
-     * @param tableName      表名
-     * @param excelWriterMap 自定义实体类
+     * @param apClassModelBuild ap类构建对象
      * @return NoahServiceImpl（增强版ServiceImpl-支持批量保存）
      */
-    NoahServiceImpl<BaseMapper<Object>, Object> newInstance(String tableName, Map<String, ExcelWriter> excelWriterMap);
+    NoahServiceImpl<BaseMapper<Object>, Object> newInstance(ApClassModel.Build apClassModelBuild);
 
     /**
      * 创建service实例

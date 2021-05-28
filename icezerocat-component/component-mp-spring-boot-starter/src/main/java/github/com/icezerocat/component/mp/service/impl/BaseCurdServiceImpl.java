@@ -2,36 +2,29 @@ package github.com.icezerocat.component.mp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import github.com.icezerocat.component.common.http.HttpResult;
-import github.com.icezerocat.component.common.utils.ClassUtils;
+import github.com.icezerocat.component.common.model.ApClassModel;
 import github.com.icezerocat.component.common.utils.DateUtil;
-import github.com.icezerocat.component.common.utils.StringUtil;
-import github.com.icezerocat.component.db.builder.JavassistBuilder;
-import github.com.icezerocat.component.mp.common.mybatisplus.NoahServiceImpl;
-import github.com.icezerocat.component.mp.config.MpApplicationContextHelper;
+import github.com.icezerocat.component.mp.model.MpModel;
 import github.com.icezerocat.component.mp.model.Search;
 import github.com.icezerocat.component.mp.service.BaseCurdService;
-import github.com.icezerocat.component.mp.service.BaseMpBuildService;
-import github.com.icezerocat.component.mp.utils.MqPackageUtils;
-import github.com.icezerocat.component.mp.utils.PackageUtil;
-import github.com.icezerocat.component.mp.utils.ReflectAsmUtil;
+import github.com.icezerocat.component.mp.service.MpBeanService;
+import github.com.icezerocat.component.mp.service.MpEntityService;
+import github.com.icezerocat.component.mp.service.MpTableService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 基础增删改查
@@ -44,15 +37,14 @@ import java.util.*;
 @Service
 public class BaseCurdServiceImpl implements BaseCurdService {
 
-    @Value("${entity.package:}")
-    private String traversePackage;
+    private final MpTableService mpTableService;
+    private final MpEntityService mpEntityService;
+    private final MpBeanService mpBeanService;
 
-    private final BaseMpBuildService baseMpBuildService;
-
-    private static Map<String, String> packageName;
-
-    public BaseCurdServiceImpl(BaseMpBuildService baseMpBuildService) {
-        this.baseMpBuildService = baseMpBuildService;
+    public BaseCurdServiceImpl(MpTableService mpTableService, MpEntityService mpEntityService, MpBeanService mpBeanService) {
+        this.mpTableService = mpTableService;
+        this.mpEntityService = mpEntityService;
+        this.mpBeanService = mpBeanService;
     }
 
     @Override
@@ -62,90 +54,37 @@ public class BaseCurdServiceImpl implements BaseCurdService {
 
     @Override
     public HttpResult retrieve(String beanName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
-        Wrapper wrapper = this.getWrapper(searches, orders);
-        if (wrapper == null) {
-            return HttpResult.error("搜索条件出错");
-        }
-        BaseMapper baseMapper = MpApplicationContextHelper.getBean(MpApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
-        if (page > -1 && limit > -1) {
-            Page ipage = new Page(page, limit);
-            return HttpResult.ok(baseMapper.selectPage(ipage, wrapper));
-        } else {
-            return HttpResult.ok(baseMapper.selectList(wrapper));
-        }
+        return HttpResult.ok(this.mpBeanService.retrieve(MpModel.builder().beanName(beanName).page(page).limit(limit).searches(searches).orders(orders).build()));
     }
 
     @Override
     public HttpResult delete(String beanName, List<Long> ids) {
-        BaseMapper baseMapper = MpApplicationContextHelper.getBean(MpApplicationContextHelper.getBeanName(beanName), BaseMapper.class);
-        return HttpResult.ok(baseMapper.deleteBatchIds(ids));
+        return HttpResult.ok(this.mpBeanService.deleteByIds(MpModel.builder().beanName(beanName).ids(ids).build()));
     }
 
     @Override
     public HttpResult saveOrUpdateBatch(String beanName, String entityName, List<Map<String, Object>> mapList) {
-        entityName = org.springframework.util.StringUtils.uncapitalize(entityName);
-        beanName = MpApplicationContextHelper.getBeanName(beanName);
-        boolean insert = false;
-        ServiceImpl service = MpApplicationContextHelper.getBean(org.springframework.util.StringUtils.uncapitalize(beanName), ServiceImpl.class);
         try {
-            if (packageName == null && ObjectUtils.isNotEmpty(traversePackage)) {
-                packageName = PackageUtil.getClassNameMap(traversePackage);
-            }
-            String fullPackageName = org.springframework.util.StringUtils.capitalize(entityName);
-            if (!packageName.containsKey(fullPackageName)) {
-                return HttpResult.error("找不到对象名【" + entityName + "】，请尝试全路径包名");
-            }
-            List<Object> objects = new ArrayList<>();
-            for (Map<String, Object> map : mapList) {
-                Class<?> aClass = Class.forName(packageName.get(fullPackageName));
-                Object newInstance = aClass.newInstance();
-                ReflectAsmUtil.mapToBean(map, newInstance);
-                objects.add(newInstance);
-            }
-            insert = service.saveOrUpdateBatch(objects);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return HttpResult.error("找不到类");
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
+            List<Object> objectList = this.mpBeanService.saveOrUpdateBatch(MpModel.builder().beanName(beanName).entityName(entityName).objectList(mapList).build());
+            return CollectionUtils.isEmpty(objectList) ? HttpResult.error("保存失败") : HttpResult.ok(objectList);
+        } catch (Exception e) {
+            return HttpResult.error(e.getMessage());
         }
-        return HttpResult.ok(insert);
     }
 
     @Override
     public HttpResult saveOrUpdateBatchByTableName(String tableName, List<Map<String, Object>> objectList) {
-        tableName = tableName.toLowerCase();
-        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        String entityName = JavassistBuilder.PACKAGE_NAME + org.springframework.util.StringUtils.capitalize(StringUtil.underlineToCamelCase(tableName));
-        boolean insert;
+        HttpResult.Build<Boolean> instance = HttpResult.Build.getInstance();
+        boolean isInsert = false;
         try {
-            Class aClass = ClassUtils.searchClassByClassName(this.baseMpBuildService.getSaveClassPath(), entityName, Thread.currentThread().getContextClassLoader().getParent());
-            if (aClass == null) {
-                log.error("加载外部对象出错:" + entityName);
-                return HttpResult.error("加载外部对象出错:" + entityName);
-            }
-
-            List<Object> objects = new ArrayList<>();
-            for (Map<String, Object> map : objectList) {
-                Object newInstance = aClass.newInstance();
-                ReflectAsmUtil.mapToBean(map, newInstance);
-                objects.add(newInstance);
-            }
-            insert = baseMapperObjectNoahService.saveOrUpdateBatch(objects);
-        } catch (ClassNotFoundException e) {
-            log.error("找不到类:" + entityName);
-            e.printStackTrace();
-            return HttpResult.error("找不到类:" + entityName);
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-            log.error("创建对象失败:" + entityName);
-            return HttpResult.error("创建对象失败:" + entityName);
-        } catch (NoSuchMethodException | MalformedURLException e) {
-            log.error("加载外部对象出错:" + entityName);
-            e.printStackTrace();
-            return HttpResult.error("加载外部对象出错:" + entityName);
+            List<Object> objects = this.mpTableService.saveOrUpdateBatch(MpModel.builder().apClassModelBuild(ApClassModel.Build.getInstance(tableName)).objectList(objectList).build());
+            isInsert = CollectionUtils.isEmpty(objects);
+        } catch (Exception e) {
+            instance.setMsg(e.getMessage());
+            instance.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        return HttpResult.ok(insert);
+        instance.setData(isInsert);
+        return isInsert ? instance.setCode(HttpStatus.OK.value()).complete() : instance.complete();
     }
 
     @Override
@@ -160,8 +99,13 @@ public class BaseCurdServiceImpl implements BaseCurdService {
 
     @Override
     public HttpResult<List<?>> retrieveByTableName(String tableName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
-        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        return this.retrieve(baseMapperObjectNoahService, page, limit, searches, orders);
+        return this.mpTableService.retrieve(MpModel.builder()
+                .apClassModelBuild(ApClassModel.Build.getInstance(tableName))
+                .page(page)
+                .limit(limit)
+                .searches(searches)
+                .orders(orders).
+                        build());
     }
 
     @Override
@@ -174,128 +118,41 @@ public class BaseCurdServiceImpl implements BaseCurdService {
         return this.retrieveByEntity(entityName, -1, -1, Collections.emptyList());
     }
 
-
     @Override
     public HttpResult<List<?>> retrieveByEntity(String entityName, long page, long limit, List<Search> searches, List<OrderItem> orders) {
-        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService;
-        try {
-            baseMapperObjectNoahService = this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(entityName));
-        } catch (IllegalAccessException | InstantiationException e) {
-            String message = "项目没有此对象".concat(entityName).concat(":").concat(e.getMessage());
-            log.error(message);
-            e.printStackTrace();
-            return HttpResult.Build.<List<?>>getInstance()
-                    .setData(Collections.emptyList())
-                    .setCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                    .setMsg(message)
-                    .setCount(0L)
-                    .complete();
-        }
-        return this.retrieve(baseMapperObjectNoahService, page, limit, searches, orders);
+        return this.mpEntityService.retrieve(MpModel.builder().entityName(entityName).page(page).limit(limit).searches(searches).orders(orders).build());
     }
 
     @Override
     public HttpResult deleteByTableName(String tableName, List<Long> ids) {
-        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        return HttpResult.ok(baseMapperObjectNoahService.removeByIds(ids));
+        return HttpResult.ok(this.mpTableService.deleteByIds(MpModel.builder().apClassModelBuild(ApClassModel.Build.getInstance(tableName)).ids(ids).build()));
     }
 
     @Override
     public HttpResult deleteBySearch(String tableName, List<Search> searches) {
-        NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(tableName);
-        return this.deleteBySearch(baseMapperObjectNoahService, searches);
+        return HttpResult.ok(this.mpTableService.deleteBySearch(MpModel.builder().apClassModelBuild(ApClassModel.Build.getInstance(tableName)).searches(searches).build()));
     }
 
     @Override
     public HttpResult deleteByEntitySearch(String entity, List<Search> searches) {
-        try {
-            NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService =
-                    this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(entity));
-            return this.deleteBySearch(baseMapperObjectNoahService, searches);
-        } catch (IllegalAccessException | InstantiationException e) {
-            log.error("删除失败或构建实体类存在异常！具体原因：".concat(e.getMessage()));
-            e.printStackTrace();
-            return HttpResult.error("删除失败或构建实体类存在异常！具体原因：".concat(e.getMessage()));
+        boolean isDelete = this.mpEntityService.deleteBySearch(MpModel.builder().entityName(entity).searches(searches).build());
+        if (isDelete) {
+            return HttpResult.ok("删除成功");
+        } else {
+            return HttpResult.error("删除失败或构建实体类存在异常！");
         }
     }
 
     @Override
     public HttpResult saveOrUpdateBatch(String entityName, List<Map<String, Object>> mapList) {
-        try {
-            Class aClass = MqPackageUtils.getMqClassByName(entityName);
-            if (aClass == null) {
-                return HttpResult.error("项目没有此对象".concat(entityName));
-            }
-            NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(aClass.newInstance());
-            List<Object> objects = new ArrayList<>();
-            for (Map<String, Object> map : mapList) {
-                Object newInstance = aClass.newInstance();
-                ReflectAsmUtil.mapToBean(map, newInstance);
-                objects.add(newInstance);
-            }
-            return HttpResult.ok(baseMapperObjectNoahService.saveOrUpdateBatch(objects));
-        } catch (IllegalAccessException | InstantiationException e) {
-            log.error("类创建实例出错：{}", e.getMessage());
-            e.printStackTrace();
-            return HttpResult.error("类创建实例出错：".concat(e.getMessage()));
-        }
+        return HttpResult.ok(this.mpEntityService.saveOrUpdateBatch(MpModel.builder().entityName(entityName).objectList(mapList).build()));
     }
 
-    /**
-     * 查询
-     *
-     * @param baseMapperObjectNoahService service
-     * @param page                        页码
-     * @param limit                       页码大小
-     * @param searches                    搜索条件
-     * @param orders                      排序
-     * @return 查询结果
-     */
-    private HttpResult<List<?>> retrieve(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, long page, long limit, List<Search> searches, List<OrderItem> orders) {
-        Wrapper wrapper = this.getWrapper(searches, orders);
-        HttpResult.Build<List<?>> build = HttpResult.Build.getInstance();
-        if (wrapper == null) {
-            return HttpResult.error("搜索条件出错");
-        }
-        if (page > -1 && limit > -1) {
-            Page ipage = new Page(page, limit);
-            Page selectPage = baseMapperObjectNoahService.getBaseMapper().selectPage(ipage, wrapper);
-            return build.setCode(HttpStatus.OK.value()).setCount(selectPage.getTotal()).setData(selectPage.getRecords()).complete();
-        } else {
-            List selectList = baseMapperObjectNoahService.getBaseMapper().selectList(wrapper);
-            return build.setCode(HttpStatus.OK.value()).setCount(selectList.size()).setData(selectList).complete();
-        }
-    }
 
-    /**
-     * 根据搜索条件删除数据
-     *
-     * @param baseMapperObjectNoahService 删除service实现类
-     * @param searches                    搜索条件
-     * @return 搜索结果
-     */
-    private HttpResult deleteBySearch(NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService, List<Search> searches) {
-        Wrapper wrapper = this.getWrapper(searches, Collections.emptyList());
-        if (wrapper == null || CollectionUtils.isEmpty(searches)) {
-            return HttpResult.error("搜索条件为空");
-        }
-        boolean remove = baseMapperObjectNoahService.remove(wrapper);
-        if (remove) {
-            return HttpResult.ok("删除成功");
-        } else {
-            return HttpResult.error("删除失败");
-        }
-    }
-
-    /**
-     * 获取mp搜索条件
-     *
-     * @param searches 搜索对象
-     * @return mp搜索条件
-     */
-    private Wrapper getWrapper(List<Search> searches, List<OrderItem> orders) {
-        QueryWrapper<Object> query = Wrappers.query();
-        for (Search search : searches) {
+    @Override
+    public <T> Wrapper<T> getWrapper(MpModel mpModel) {
+        QueryWrapper<T> query = Wrappers.query();
+        for (Search search : mpModel.getSearches()) {
             //判断是否是日期格式需要转换
             if (StringUtils.isNotBlank(search.getFormatDate())) {
                 Date date = DateUtil.parse(String.valueOf(search.getValue()), search.getFormatDate());
@@ -334,8 +191,8 @@ public class BaseCurdServiceImpl implements BaseCurdService {
         }
 
         //排序
-        if (!org.springframework.util.CollectionUtils.isEmpty(orders)) {
-            orders.forEach(orderItem -> {
+        if (!org.springframework.util.CollectionUtils.isEmpty(mpModel.getOrders())) {
+            mpModel.getOrders().forEach(orderItem -> {
                 if (orderItem.isAsc()) {
                     query.orderByAsc(orderItem.getColumn());
                 } else {

@@ -16,6 +16,7 @@ import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.component.db.service.ClassService;
 import github.com.icezerocat.component.db.service.DbService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -44,25 +45,18 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public Class generateClass(ApClassModel apClassModel) {
-        return this.generateClassByAnnotation(apClassModel.getTableName(), apClassModel.getClassName(), apClassModel.getClassAnnotationList(), apClassModel.getExcelWriterMap());
-    }
-
-    /**
-     * 生成类
-     *
-     * @param tableName      表名
-     * @param className      类名
-     * @param excelWriterMap 导出字段属性（字段类型，注解）
-     * @return 生成类
-     */
-    private Class generateClassByAnnotation(String tableName, String className, List<FieldAnnotation> classAnnotationList, Map<String, ExcelWriter> excelWriterMap) {
+        String className = apClassModel.getClassName();
+        String tableName = apClassModel.getTableName();
+        List<String> excludeDefaultAnnotationFieldList = apClassModel.getExcludeDefaultAnnotationFieldList();
+        List<FieldAnnotation> fieldDefaultAnnotationList = apClassModel.getFieldDefaultAnnotationList();
+        Map<String, ExcelWriter> excelWriterMap = apClassModel.getExcelWriterMap();
         className = className == null ? StringUtils.capitalize(StringUtil.underline2Camel(tableName)) : className;
         excelWriterMap = excelWriterMap == null ? new HashMap<>(1) : excelWriterMap;
 
         List<Map<String, String>> mapList = this.dbService.getTableField(tableName);
         JavassistBuilder javassistBuilder = new JavassistBuilder();
         //构建类
-        JavassistBuilder.BuildClass buildClass = this.buildClass(javassistBuilder, className, classAnnotationList);
+        JavassistBuilder.BuildClass buildClass = this.buildClass(javassistBuilder, className, apClassModel.getClassAnnotationList());
 
         //构建字段
         JavassistBuilder.BuildField buildField = javassistBuilder.newBuildField();
@@ -72,8 +66,15 @@ public class ClassServiceImpl implements ClassService {
             String field = StringUtil.underline2Camel(sourceField);
             String fieldType = fieldData.get(Table.FIELDTYPE);
             String javaFieldType = SqlToJava.toSqlToJavaObjStr(fieldType);
+
             //日期类型添加日期注解
             this.addDateAnnotation(field, javaFieldType, excelWriterMap);
+
+            //添加默认注解
+            if (!excludeDefaultAnnotationFieldList.contains(field) && CollectionUtils.isEmpty(fieldDefaultAnnotationList)) {
+                this.addFieldAnnotation(buildField, fieldDefaultAnnotationList);
+            }
+
             //判断字段
             if (excelWriterMap.containsKey(field)) {
                 this.addSpecialField(field, javaFieldType, excelWriterMap, buildField);
@@ -82,9 +83,9 @@ public class ClassServiceImpl implements ClassService {
                 buildField.addField(javaFieldType, field);
             }
         }
-
         return buildClass.writeFile();
     }
+
 
     /**
      * 构建类
@@ -163,9 +164,22 @@ public class ClassServiceImpl implements ClassService {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(newField)) {
             field = newField;
         }
-        //添加字段和注解
+        //添加字段
         buildField.addField(javaFieldType, field);
-        for (FieldAnnotation fieldAnnotation : excelWriter.getFieldAnnotationList()) {
+
+        //添加字段的注解
+        this.addFieldAnnotation(buildField, excelWriter.getFieldAnnotationList());
+
+    }
+
+    /**
+     * 添加字段的注解
+     *
+     * @param buildField          字段构建对象
+     * @param fieldAnnotationList 注解列表
+     */
+    private void addFieldAnnotation(JavassistBuilder.BuildField buildField, List<FieldAnnotation> fieldAnnotationList) {
+        for (FieldAnnotation fieldAnnotation : fieldAnnotationList) {
             try {
                 buildField.addAnnotation(Class.forName(fieldAnnotation.getClassName()));
             } catch (ClassNotFoundException e) {

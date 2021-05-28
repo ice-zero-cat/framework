@@ -123,6 +123,37 @@ public class ReflectAsmUtil {
         return oMap;
     }
 
+    /**
+     * 复制类
+     *
+     * @param map    map数据
+     * @param target 目标对象
+     * @param <T>    目标对象泛型
+     */
+    public static <T> void mapToBean(Map<String, Object> map, T target) {
+        MethodAccess toMethodAccess = get(target.getClass());
+        Field[] fromDeclaredFields = target.getClass().getDeclaredFields();
+        for (Field field : fromDeclaredFields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            try {
+                Object value = map.get(name);
+                //判断属性类型 进行转换,map中存放的是Object对象需要转换 实体类中有多少类型就加多少类型,实体类属性用包装类;
+                if (field.getType().toString().contains("Long")) {
+                    value = Long.valueOf(String.valueOf(value));
+                }
+                //处理LocalDateTime类型
+                if (field.getType().toString().contains("Date")) {
+                    value = DateUtil.parseDate(String.valueOf(value));
+                }
+                toMethodAccess.invoke(target, "set" + StringUtils.capitalize(name), value);
+            } catch (Exception e) {
+                // 设置异常，可能会没有对应字段，忽略
+            }
+        }
+
+    }
+
     private static void addMapValue(Map<String, Object> oMap, Object o, Class oClass) {
         Field[] declaredFields = oClass.getDeclaredFields();
         for (Field field : declaredFields) {

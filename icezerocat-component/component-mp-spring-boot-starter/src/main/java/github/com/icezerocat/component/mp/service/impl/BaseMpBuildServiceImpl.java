@@ -7,14 +7,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import github.com.icezerocat.component.common.easyexcel.object.ExcelWriter;
 import github.com.icezerocat.component.common.easyexcel.object.FieldAnnotation;
-import github.com.icezerocat.component.common.easyexcel.object.Table;
 import github.com.icezerocat.component.common.model.ApClassModel;
 import github.com.icezerocat.component.common.utils.ClassUtils;
 import github.com.icezerocat.component.common.utils.StringUtil;
 import github.com.icezerocat.component.core.config.ProjectPathConfig;
 import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.component.db.service.ClassService;
-import github.com.icezerocat.component.db.service.DbService;
 import github.com.icezerocat.component.mp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.component.mp.config.MpApplicationContextHelper;
 import github.com.icezerocat.component.mp.service.BaseMpBuildService;
@@ -30,10 +28,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description: 基础mp构建服务
@@ -51,9 +46,9 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      */
     private static Map<String, NoahServiceImpl<BaseMapper<Object>, Object>> tableNameBaseMapperMap = new HashMap<>();
     private static Map<Class<?>, Object> entityBaseMapperMap = new HashMap<>();
+    private static Set<String> excelWriterMapSet = new HashSet<>();
 
     private final ProxyMpService proxyMpService;
-    private final DbService dbService;
     private final ClassService classService;
 
     private String prefix = "Ap";
@@ -61,16 +56,19 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     private String mapperService = JavassistBuilder.PACKAGE_NAME.concat("service.");
     private String mapperServiceImpl = JavassistBuilder.PACKAGE_NAME.concat("service.impl.");
 
-    public BaseMpBuildServiceImpl(ProxyMpService proxyMpService, DbService dbService, ClassService classService) {
+    public BaseMpBuildServiceImpl(ProxyMpService proxyMpService, ClassService classService) {
         this.proxyMpService = proxyMpService;
-        this.dbService = dbService;
         this.classService = classService;
     }
 
     @Override
-    public NoahServiceImpl<BaseMapper<Object>, Object> newInstance(String tableName, Map<String, ExcelWriter> excelWriterMap) {
-        if (!tableNameBaseMapperMap.containsKey(tableName)) {
-            Object o = this.generateEntity(tableName.toLowerCase(), excelWriterMap);
+    public NoahServiceImpl<BaseMapper<Object>, Object> newInstance(ApClassModel.Build apClassModelBuild) {
+        Map<String, ExcelWriter> excelWriterMap = apClassModelBuild.getExcelWriterMap();
+        String tableName = apClassModelBuild.getTableName();
+        boolean isExcelWriterMap = excelWriterMap != null && !excelWriterMap.isEmpty() && excelWriterMapSet.add(apClassModelBuild.getTableName());
+        //没有jvm缓存service或者携带excelWriterMap的参数没有记录时：重新生成service
+        if (!tableNameBaseMapperMap.containsKey(tableName) || isExcelWriterMap) {
+            Object o = this.generateEntity(apClassModelBuild);
             NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.newInstance(o);
             if (baseMapperObjectNoahService != null) {
                 tableNameBaseMapperMap.put(tableName, baseMapperObjectNoahService);
@@ -81,7 +79,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
 
     @Override
     public NoahServiceImpl<BaseMapper<Object>, Object> newInstance(String tableName) {
-        return this.newInstance(tableName, null);
+        return this.newInstance(ApClassModel.Build.getInstance(tableName));
     }
 
     /**
@@ -115,54 +113,40 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     }
 
     /**
+     * 获取保存路径
+     *
+     * @return 绝对路径
+     */
+    @Override
+    public String getSaveClassPath() {
+        return ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
+    }
+
+    /**
      * 生成对象
      *
-     * @param tableName 表单名
+     * @param apClassModelBuild ap构建类
      * @return 对象
      */
-    private Object generateEntity(String tableName, Map<String, ExcelWriter> excelWriterMap) {
+    private Object generateEntity(ApClassModel.Build apClassModelBuild) {
+        String tableName = apClassModelBuild.getTableName();
         String className = StringUtils.capitalize(StringUtil.underline2Camel(tableName));
-        ApClassModel.Build instance = ApClassModel.Build.getInstance(tableName);
 
         //添加表注解
         FieldAnnotation classAnnotation =
                 FieldAnnotation.Build.getInstance(TableName.class.getName()).addAnnotationMember(tableName).complete();
-        instance.setClassName(className).setClassAnnotationList(Collections.singletonList(classAnnotation));
+        apClassModelBuild.setClassName(className).setClassAnnotationList(Collections.singletonList(classAnnotation));
 
         //字段注解
-        excelWriterMap = excelWriterMap == null ? new HashMap<>() : excelWriterMap;
-        Class oClass;
-        List<Map<String, String>> mapList = this.dbService.getTableField(tableName);
-        //构建字段
-        for (Map<String, String> fieldData : mapList) {
-            //字段下划线转驼峰法
-            String sourceField = fieldData.get(Table.FIELD);
-            String field = StringUtil.underline2Camel(sourceField);
-            ExcelWriter excelWriter = new ExcelWriter();
-            FieldAnnotation annotation;
-            //id小写
-            if ("ID".equals(field.toUpperCase())) {
-                annotation = FieldAnnotation.Build.getInstance(TableId.class.getName()).addAnnotationMember(sourceField).complete();
-            } else {
-                //添加myBatis字段和注解
-                annotation = FieldAnnotation.Build.getInstance(TableField.class.getName()).addAnnotationMember(sourceField).complete();
-            }
-            excelWriter.setFieldAnnotationList(Collections.singletonList(annotation));
-            //如果存在则不更新
-            if (!excelWriterMap.containsKey(sourceField) && !excelWriterMap.containsKey(field)) {
-                excelWriterMap.put(field, excelWriter);
-            }
-        }
-        instance.setExcelWriterMap(excelWriterMap);
-        oClass = this.classService.generateClass(instance.complete());
-        Object o = null;
-        try {
-            o = oClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            log.error("获取对象失败：{}", e.getMessage());
-            e.printStackTrace();
-        }
-        return o;
+        Map<String, ExcelWriter> excelWriterMap = apClassModelBuild.getExcelWriterMap();
+        excelWriterMap.put("id", ExcelWriter.Build.getInstance("id").addFieldAnnotation(TableId.class.getName()).complete());
+        excelWriterMap.put("ID", ExcelWriter.Build.getInstance("ID").addFieldAnnotation(TableId.class.getName()).complete());
+
+        //字段默认注解
+        apClassModelBuild.setFieldDefaultAnnotationList(Collections.singletonList(FieldAnnotation.Build.getInstance(TableField.class.getName()).complete()));
+        apClassModelBuild.setExcludeDefaultAnnotationFieldList(Arrays.asList("id", "ID"));
+
+        return this.classService.generateClass(apClassModelBuild.complete());
     }
 
     /**
@@ -284,15 +268,5 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     private String getServiceImplName(Class tClass) {
         String simpleName = tClass.getSimpleName();
         return this.prefix.concat(simpleName).concat("ServiceImpl");
-    }
-
-    /**
-     * 获取保存路径
-     *
-     * @return 绝对路径
-     */
-    @Override
-    public String getSaveClassPath() {
-        return ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME;
     }
 }
