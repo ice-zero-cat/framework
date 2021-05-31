@@ -79,7 +79,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
 
     @Override
     public NoahServiceImpl<BaseMapper<Object>, Object> newInstance(String tableName) {
-        return this.newInstance(ApClassModel.Build.getInstance(tableName));
+        return this.newInstance(this.generateEntity(ApClassModel.Build.getInstance(tableName)));
     }
 
     /**
@@ -146,7 +146,16 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         apClassModelBuild.setFieldDefaultAnnotationList(Collections.singletonList(FieldAnnotation.Build.getInstance(TableField.class.getName()).complete()));
         apClassModelBuild.setExcludeDefaultAnnotationFieldList(Arrays.asList("id", "ID"));
 
-        return this.classService.generateClass(apClassModelBuild.complete());
+        Class aClass = this.classService.generateClass(apClassModelBuild.complete());
+        Object o = null;
+        try {
+            o = aClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error("generateEntity构建对象出错:{}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return o;
     }
 
     /**
@@ -191,6 +200,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
         ByteBuddy serviceByteBuddy = new ByteBuddy();
         DynamicType.Unloaded<?> serviceMake = serviceByteBuddy.makeInterface(iServiceGeneric).name(servicePackageName).make();
         Class<?> serviceClass = this.generateClass(serviceMake, servicePackageName);
+        log.debug("generateServiceClass:{}", servicePackageName);
 
         //生成serviceImpl实现类
         String serviceImplName = this.getServiceImplName(entityClass);
@@ -205,6 +215,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
                 .make();
         @SuppressWarnings("unchecked")
         Class<NoahServiceImpl<E, T>> serviceImplClass = (Class<NoahServiceImpl<E, T>>) this.generateClass(serviceImplMake, serviceImplPackageName);
+        log.debug("generateServiceImplClass:{}", servicePackageName);
 
         //注入bean
         NoahServiceImpl<E, T> instance = null;
@@ -235,6 +246,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
             log.debug("生成baseMapper class文件失败：{}", e.getMessage());
             e.printStackTrace();
         }
+        log.debug("generateClass:{}", packageName);
         return tClass;
     }
 
