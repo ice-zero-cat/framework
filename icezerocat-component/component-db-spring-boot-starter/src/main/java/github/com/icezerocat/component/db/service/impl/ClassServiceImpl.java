@@ -131,7 +131,7 @@ public class ClassServiceImpl implements ClassService {
             AnnotationMember annotationMember = new AnnotationMember();
             annotationMember.setMember("using");
             annotationMember.setType(AnnotationBuildType.CLASS.getValue());
-            annotationMember.setValue(DateJacksonConverter.class);
+            annotationMember.setValue(DateJacksonConverter.class.getName());
             fieldAnnotation.setAnnotationMemberList(Collections.singletonList(annotationMember));
             fieldAnnotationList.add(fieldAnnotation);
             excelWriter.setFieldAnnotationList(fieldAnnotationList);

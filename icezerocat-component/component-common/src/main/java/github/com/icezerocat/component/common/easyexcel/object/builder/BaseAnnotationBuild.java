@@ -233,6 +233,13 @@ public abstract class BaseAnnotationBuild {
         return this;
     }
 
+    /**
+     * 添加注解成员值，class值
+     *
+     * @param member 成员名称
+     * @param value  值得类名
+     * @return 基础注解构建类
+     */
     public BaseAnnotationBuild addMemberValueByClassName(String member, @NotNull String... value) {
         MemberValue memberValue = new ClassMemberValue(value[0], this.constPool);
         if (value.length > 1) {
