@@ -91,6 +91,9 @@ public class JavassistBuilder {
             try {
                 ctConstructor.setBody("{}");
                 this.ctClass.addConstructor(ctConstructor);
+                this.classFile = this.ctClass.getClassFile();
+                this.constPool = this.classFile.getConstPool();
+                this.annotationsAttribute = new AnnotationsAttribute(this.constPool, AnnotationsAttribute.visibleTag);
             } catch (CannotCompileException e) {
                 e.printStackTrace();
             }
@@ -105,21 +108,6 @@ public class JavassistBuilder {
         public BuildClass setInterfaces(Class interFacesClass) {
             CtClass[] interfaces = new CtClass[]{ClassPool.getDefault().makeClass(interFacesClass.getName())};
             this.ctClass.setInterfaces(interfaces);
-            return this;
-        }
-
-
-        /**
-         * 构建注解
-         *
-         * @param c 类
-         * @return 类构建对象
-         */
-        public BuildClass buildAnnotations(Class c) {
-            this.classFile = this.ctClass.getClassFile();
-            this.constPool = this.classFile.getConstPool();
-            this.annotationsAttribute = new AnnotationsAttribute(this.constPool, AnnotationsAttribute.visibleTag);
-            this.addAnnotation(c);
             return this;
         }
 

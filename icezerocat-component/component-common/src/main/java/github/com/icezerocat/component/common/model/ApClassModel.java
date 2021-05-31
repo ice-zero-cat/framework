@@ -3,9 +3,7 @@ package github.com.icezerocat.component.common.model;
 import github.com.icezerocat.component.common.easyexcel.object.ExcelWriter;
 import github.com.icezerocat.component.common.easyexcel.object.FieldAnnotation;
 import github.com.icezerocat.component.common.utils.StringUtil;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -19,7 +17,6 @@ import java.util.*;
  * @version 1.0
  */
 @Data
-@AllArgsConstructor
 @SuppressWarnings("unused")
 public class ApClassModel implements Serializable {
     /**
@@ -47,6 +44,15 @@ public class ApClassModel implements Serializable {
      */
     final private List<String> excludeDefaultAnnotationFieldList;
 
+    public ApClassModel(String tableName, String className, Map<String, ExcelWriter> excelWriterMap, List<FieldAnnotation> classAnnotationList, List<FieldAnnotation> fieldDefaultAnnotationList, List<String> excludeDefaultAnnotationFieldList) {
+        this.tableName = tableName;
+        this.className = className;
+        this.excelWriterMap = excelWriterMap == null ? new HashMap<>() : excelWriterMap;
+        this.classAnnotationList = classAnnotationList == null ? new ArrayList<>() : classAnnotationList;
+        this.fieldDefaultAnnotationList = fieldDefaultAnnotationList == null ? new ArrayList<>() : fieldDefaultAnnotationList;
+        this.excludeDefaultAnnotationFieldList = excludeDefaultAnnotationFieldList == null ? new ArrayList<>() : excludeDefaultAnnotationFieldList;
+    }
+
     private ApClassModel(Build build) {
         this.tableName = build.tableName;
         this.className = build.className;
@@ -57,8 +63,6 @@ public class ApClassModel implements Serializable {
     }
 
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Build implements Serializable {
         /**
          * 表名
@@ -87,6 +91,15 @@ public class ApClassModel implements Serializable {
 
         Build(String tableName) {
             this.tableName = tableName;
+        }
+
+        public Build(String tableName, String className, List<FieldAnnotation> classAnnotationList, Map<String, ExcelWriter> excelWriterMap, List<FieldAnnotation> fieldDefaultAnnotationList, List<String> excludeDefaultAnnotationFieldList) {
+            this.tableName = tableName;
+            this.className = className;
+            this.classAnnotationList = classAnnotationList == null ? new ArrayList<>() : classAnnotationList;
+            this.excelWriterMap = excelWriterMap == null ? new HashMap<>() : excelWriterMap;
+            this.fieldDefaultAnnotationList = fieldDefaultAnnotationList == null ? new ArrayList<>() : fieldDefaultAnnotationList;
+            this.excludeDefaultAnnotationFieldList = excludeDefaultAnnotationFieldList == null ? new ArrayList<>() : excludeDefaultAnnotationFieldList;
         }
 
         /**

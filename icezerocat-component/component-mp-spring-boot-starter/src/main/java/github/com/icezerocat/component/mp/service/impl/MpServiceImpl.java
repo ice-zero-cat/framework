@@ -49,7 +49,7 @@ public class MpServiceImpl implements MpService {
         MethodAccess methodAccess = ReflectAsmUtil.get(service.getClass());
         try {
             @SuppressWarnings("all")
-            M m = (M) methodAccess.invoke(service, mpModel.getServiceName(), mpModel);
+            M m = (M) methodAccess.invoke(service, mpModel.getServiceMethod(), mpModel);
             return MpResult.getInstance(m);
         } catch (Exception e) {
             Throwable cause = e.getCause();
