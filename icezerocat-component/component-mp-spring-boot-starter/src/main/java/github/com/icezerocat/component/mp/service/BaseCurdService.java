@@ -1,10 +1,8 @@
 package github.com.icezerocat.component.mp.service;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import github.com.icezerocat.component.common.http.HttpResult;
-import github.com.icezerocat.component.mp.model.MpModel;
 import github.com.icezerocat.component.mp.model.Search;
 
 import java.util.List;
@@ -166,12 +164,4 @@ public interface BaseCurdService {
      * @return 保存结果
      */
     HttpResult saveOrUpdateBatch(String entityName, List<Map<String, Object>> mapList);
-
-    /**
-     * 获取mp搜索条件
-     *
-     * @param mpModel mp模型
-     * @return mp搜索条件
-     */
-    <T> Wrapper<T> getWrapper(MpModel mpModel);
 }

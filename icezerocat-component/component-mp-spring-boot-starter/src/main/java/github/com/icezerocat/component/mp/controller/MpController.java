@@ -58,7 +58,7 @@ public class MpController {
      * @param mpModel mo模型
      * @return 处理结果
      */
-    @PostMapping
+    @PostMapping("operation")
     public HttpResult operation(@RequestBody MpModel mpModel) {
         try {
             MpResult<Object> objectMpResult = this.mpService.invoke(mpModel);

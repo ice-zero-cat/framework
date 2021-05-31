@@ -2,6 +2,10 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   github.com.icezerocat.component.mp.config.MpApplicationContextHelper,\
   github.com.icezerocat.component.mp.config.MybatisPlusConfig,\
+  github.com.icezerocat.component.mp.service.impl.MpServiceImpl,\
+  github.com.icezerocat.component.mp.service.impl.MpTableServiceImpl,\
+  github.com.icezerocat.component.mp.service.impl.MpEntityServiceImpl,\
+  github.com.icezerocat.component.mp.service.impl.MpBeanServiceImpl,\
   github.com.icezerocat.component.mp.service.impl.BaseCurdServiceImpl,\
   github.com.icezerocat.component.mp.service.impl.BaseMpBuildServiceImpl,\
   github.com.icezerocat.component.mp.service.impl.ProxyMpServiceImpl,\

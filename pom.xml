@@ -16,9 +16,10 @@
     <description>Dao framework</description>
 
     <modules>
-        <module>admin</module>
+        <module>icezerocat-component</module>
         <module>jpa</module>
         <module>jdbc-template</module>
+        <!--<module>admin</module>-->
         <module>backup</module>
     </modules>
 
@@ -39,12 +40,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <jpa.version>0.0.2</jpa.version>
+        <jpa.version>0.0.3</jpa.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <core.version>0.0.3</core.version>
         <guava.version>29.0-jre</guava.version>
         <fastjson.version>1.2.49</fastjson.version>
-        <jdbc-template.version>0.0.2</jdbc-template.version>
+        <jdbc-template.version>0.0.3</jdbc-template.version>
         <backup.version>0.0.2</backup.version>
         <admin.version>0.0.2</admin.version>
         <icezerocat-mybatismp.version>0.0.2</icezerocat-mybatismp.version>

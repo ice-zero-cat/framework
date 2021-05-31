@@ -5,7 +5,6 @@ import github.com.icezerocat.component.common.http.HttpResult;
 import github.com.icezerocat.component.core.exception.ApiException;
 import github.com.icezerocat.component.mp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.component.mp.model.MpModel;
-import github.com.icezerocat.component.mp.service.BaseCurdService;
 import github.com.icezerocat.component.mp.service.BaseMpBuildService;
 import github.com.icezerocat.component.mp.service.MpEntityService;
 import github.com.icezerocat.component.mp.service.MpService;
@@ -28,12 +27,10 @@ import java.util.List;
 @Service("mpEntityService")
 @SuppressWarnings("unused")
 public class MpEntityServiceImpl implements MpEntityService {
-    private final BaseCurdService baseCurdService;
     private final BaseMpBuildService baseMpBuildService;
     private final MpService mpService;
 
-    public MpEntityServiceImpl(BaseCurdService baseCurdService, BaseMpBuildService baseMpBuildService, MpService mpService) {
-        this.baseCurdService = baseCurdService;
+    public MpEntityServiceImpl(BaseMpBuildService baseMpBuildService, MpService mpService) {
         this.baseMpBuildService = baseMpBuildService;
         this.mpService = mpService;
     }
@@ -64,7 +61,7 @@ public class MpEntityServiceImpl implements MpEntityService {
         try {
             NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService =
                     this.baseMpBuildService.newInstance(MqPackageUtils.getEntityByName(mpModel.getEntityName()));
-            isDelete = baseMapperObjectNoahService.remove(this.baseCurdService.getWrapper(mpModel));
+            isDelete = baseMapperObjectNoahService.remove(this.mpService.getWrapper(mpModel));
         } catch (IllegalAccessException | InstantiationException e) {
             log.error("删除失败或构建实体类存在异常！具体原因：".concat(e.getMessage()));
             e.printStackTrace();

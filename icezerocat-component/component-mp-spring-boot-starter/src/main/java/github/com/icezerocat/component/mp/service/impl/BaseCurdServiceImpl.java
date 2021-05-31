@@ -1,13 +1,8 @@
 package github.com.icezerocat.component.mp.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import github.com.icezerocat.component.common.http.HttpResult;
 import github.com.icezerocat.component.common.model.ApClassModel;
-import github.com.icezerocat.component.common.utils.DateUtil;
 import github.com.icezerocat.component.mp.model.MpModel;
 import github.com.icezerocat.component.mp.model.Search;
 import github.com.icezerocat.component.mp.service.BaseCurdService;
@@ -19,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -146,60 +138,5 @@ public class BaseCurdServiceImpl implements BaseCurdService {
     @Override
     public HttpResult saveOrUpdateBatch(String entityName, List<Map<String, Object>> mapList) {
         return HttpResult.ok(this.mpEntityService.saveOrUpdateBatch(MpModel.builder().entityName(entityName).objectList(mapList).build()));
-    }
-
-
-    @Override
-    public <T> Wrapper<T> getWrapper(MpModel mpModel) {
-        QueryWrapper<T> query = Wrappers.query();
-        for (Search search : mpModel.getSearches()) {
-            //判断是否是日期格式需要转换
-            if (StringUtils.isNotBlank(search.getFormatDate())) {
-                Date date = DateUtil.parse(String.valueOf(search.getValue()), search.getFormatDate());
-                search.setValue(date);
-            }
-            //搜索条件默认类型：like，还是自定义类型：eq、ne等
-            if (StringUtils.isBlank(search.getType())) {
-                query.like(search.getField(), search.getValue());
-            } else {
-                try {
-                    Method[] declaredMethods = query.getClass().getSuperclass().getDeclaredMethods();
-                    for (Method method : declaredMethods) {
-                        if (method.getName().equals(search.getType())) {
-                            method.setAccessible(true);
-                            method.invoke(query, true, search.getField(), search.getValue());
-                            break;
-                        }
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    log.error("{}调用{}方法失败！\t{}", query.getClass().getName(), search.getType(), e.getMessage());
-                    Throwable cause = e.getCause();
-                    if (cause != null) {
-                        cause.printStackTrace();
-                    }
-                    if (e instanceof InvocationTargetException) {
-                        Throwable t = ((InvocationTargetException) e).getTargetException();
-                        if (t != null) {
-                            t.printStackTrace();
-                        }
-                    }
-                    e.printStackTrace();
-                    return null;
-                }
-
-            }
-        }
-
-        //排序
-        if (!org.springframework.util.CollectionUtils.isEmpty(mpModel.getOrders())) {
-            mpModel.getOrders().forEach(orderItem -> {
-                if (orderItem.isAsc()) {
-                    query.orderByAsc(orderItem.getColumn());
-                } else {
-                    query.orderByDesc(orderItem.getColumn());
-                }
-            });
-        }
-        return query;
     }
 }

@@ -1,6 +1,8 @@
 package github.com.icezerocat.component.common.easyexcel.object;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.List;
  * Date 2020/3/13 16:39
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExcelWriter implements Serializable {
     /**
      * 字段名
@@ -28,9 +32,6 @@ public class ExcelWriter implements Serializable {
      */
     private List<FieldAnnotation> fieldAnnotationList = new ArrayList<>();
 
-    public ExcelWriter() {
-    }
-
     /**
      * 构造函数
      *
@@ -43,6 +44,8 @@ public class ExcelWriter implements Serializable {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Build {
         /**
          * 字段名

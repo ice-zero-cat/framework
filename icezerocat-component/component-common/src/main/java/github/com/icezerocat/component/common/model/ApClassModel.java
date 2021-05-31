@@ -3,9 +3,12 @@ package github.com.icezerocat.component.common.model;
 import github.com.icezerocat.component.common.easyexcel.object.ExcelWriter;
 import github.com.icezerocat.component.common.easyexcel.object.FieldAnnotation;
 import github.com.icezerocat.component.common.utils.StringUtil;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -16,8 +19,9 @@ import java.util.*;
  * @version 1.0
  */
 @Data
+@AllArgsConstructor
 @SuppressWarnings("unused")
-public class ApClassModel {
+public class ApClassModel implements Serializable {
     /**
      * 表名
      */
@@ -53,7 +57,9 @@ public class ApClassModel {
     }
 
     @Data
-    public static class Build {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Build implements Serializable {
         /**
          * 表名
          */

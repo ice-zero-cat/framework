@@ -8,7 +8,6 @@ import github.com.icezerocat.component.core.exception.ApiException;
 import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.component.mp.common.mybatisplus.NoahServiceImpl;
 import github.com.icezerocat.component.mp.model.MpModel;
-import github.com.icezerocat.component.mp.service.BaseCurdService;
 import github.com.icezerocat.component.mp.service.BaseMpBuildService;
 import github.com.icezerocat.component.mp.service.MpService;
 import github.com.icezerocat.component.mp.service.MpTableService;
@@ -30,12 +29,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class MpTableServiceImpl implements MpTableService {
 
-    private final BaseCurdService baseCurdService;
     private final BaseMpBuildService baseMpBuildService;
     private final MpService mpService;
 
-    public MpTableServiceImpl(BaseCurdService baseCurdService, BaseMpBuildService baseMpBuildService, MpService mpService) {
-        this.baseCurdService = baseCurdService;
+    public MpTableServiceImpl(BaseMpBuildService baseMpBuildService, MpService mpService) {
         this.baseMpBuildService = baseMpBuildService;
         this.mpService = mpService;
     }
@@ -76,6 +73,6 @@ public class MpTableServiceImpl implements MpTableService {
     @Override
     public boolean deleteBySearch(MpModel mpModel) {
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.baseMpBuildService.newInstance(mpModel.getApClassModelBuild());
-        return baseMapperObjectNoahService.remove(this.baseCurdService.getWrapper(mpModel));
+        return baseMapperObjectNoahService.remove(this.mpService.getWrapper(mpModel));
     }
 }

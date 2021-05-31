@@ -1,7 +1,9 @@
 package github.com.icezerocat.component.common.easyexcel.object;
 
 import github.com.icezerocat.component.common.easyexcel.object.builder.AnnotationBuildType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
  * @version 1.0
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FieldAnnotation implements Serializable {
     /**
      * 注解类名
@@ -25,15 +29,14 @@ public class FieldAnnotation implements Serializable {
      */
     private List<AnnotationMember> annotationMemberList = new ArrayList<>();
 
-    public FieldAnnotation() {
-    }
-
     public FieldAnnotation(Build build) {
         this.className = build.className;
         this.annotationMemberList = build.annotationMemberList;
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Build {
         /**
          * 注解类名

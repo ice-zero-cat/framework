@@ -1,6 +1,8 @@
 package github.com.icezerocat.component.mp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,11 +15,9 @@ import java.io.Serializable;
  * @author 0.0.0
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Search implements Serializable {
-
-    public Search() {
-
-    }
 
     public Search(String field, Object value) {
         this.field = field;

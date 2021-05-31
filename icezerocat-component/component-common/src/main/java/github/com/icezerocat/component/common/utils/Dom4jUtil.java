@@ -205,6 +205,7 @@ public class Dom4jUtil {
      *
      * @param xml 被解析的XMl
      * @return Document
+     * @throws SAXException sax异常
      */
     public static Element parseXml(String xml) throws SAXException {
         StringReader sr = new StringReader(xml);
@@ -413,6 +414,7 @@ public class Dom4jUtil {
      * @param attributeName 属性名称
      * @param value         新值
      * @param outXml        输出文件路径及文件名 如果输出文件为null，则默认为原xml文件
+     * @throws SAXException sax异常
      */
     public static void modifyDocument(File inputXml, String nodes, String attributeName, String value, String outXml) throws SAXException {
         try {
