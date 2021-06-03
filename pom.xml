@@ -20,7 +20,7 @@
         <module>jpa</module>
         <module>jdbc-template</module>
         <!--<module>admin</module>-->
-        <module>backup</module>
+        <!--<module>backup</module>-->
     </modules>
 
     <!--版本号管理-->
