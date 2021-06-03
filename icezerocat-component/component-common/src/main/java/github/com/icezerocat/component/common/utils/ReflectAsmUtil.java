@@ -144,7 +144,7 @@ public class ReflectAsmUtil {
                 }
                 //处理LocalDateTime类型
                 if (field.getType().toString().contains("Date")) {
-                    value = DateUtil.parseDate(String.valueOf(value));
+                    value = DateUtil.getDate(String.valueOf(value));
                 }
                 toMethodAccess.invoke(target, "set" + StringUtils.capitalize(name), value);
             } catch (Exception e) {

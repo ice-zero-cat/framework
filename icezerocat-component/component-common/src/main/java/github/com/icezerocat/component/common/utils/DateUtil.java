@@ -51,7 +51,13 @@ public class DateUtil {
      * @return 日期
      */
     public static Date getDate(String dateStr) {
-        return parse(dateStr, getDateFormat(dateStr));
+        String pattern = null;
+        try {
+            pattern = getDateFormat(dateStr);
+        } catch (Exception ignored) {
+
+        }
+        return parse(dateStr, pattern);
     }
 
     /**
