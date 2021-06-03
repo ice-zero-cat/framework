@@ -42,11 +42,21 @@ import java.util.*;
 public class BaseMpBuildServiceImpl implements BaseMpBuildService {
 
     /**
-     * 记录动态注入的mapper
+     * 记录通过表明动态注入的service{表名：service}
      */
-    private static Map<String, NoahServiceImpl<BaseMapper<Object>, Object>> tableNameBaseMapperMap = new HashMap<>();
-    private static Map<Class<?>, Object> entityBaseMapperMap = new HashMap<>();
-    private static Set<String> excelWriterMapSet = new HashSet<>();
+    private static Map<String, NoahServiceImpl<BaseMapper<Object>, Object>> tableNameToServiceByTableMap = new HashMap<>();
+    /**
+     * 记录通过对象动态注入的service{表名：service}
+     */
+    private static Map<String, Object> tableNameToServiceByEntityMap = new HashMap<>();
+    /**
+     * 缓存baseMapperClass{tableName: baseMapper}
+     */
+    private static Map<String, Class> tableNameToBaseMapperClassMap = new HashMap<>();
+    /**
+     * 表单是否需要重新加载（存在则不加载；不存在则加载）
+     */
+    private static Set<String> tableReloadSet = new HashSet<>();
 
     private final ProxyMpService proxyMpService;
     private final ClassService classService;
@@ -64,17 +74,24 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
     @Override
     public NoahServiceImpl<BaseMapper<Object>, Object> newInstance(ApClassModel.Build apClassModelBuild) {
         Map<String, ExcelWriter> excelWriterMap = apClassModelBuild.getExcelWriterMap();
-        String tableName = apClassModelBuild.getTableName();
-        boolean isExcelWriterMap = excelWriterMap != null && !excelWriterMap.isEmpty() && excelWriterMapSet.add(apClassModelBuild.getTableName());
-        //没有jvm缓存service或者携带excelWriterMap的参数没有记录时：重新生成service
-        if (!tableNameBaseMapperMap.containsKey(tableName) || isExcelWriterMap) {
+        String tableName = apClassModelBuild.getTableName().toLowerCase();
+        boolean isReloadTable = excelWriterMap != null && !excelWriterMap.isEmpty() && tableReloadSet.add(tableName);
+
+        //判断是否需要重新记载表单
+        if (tableNameToServiceByTableMap.containsKey(tableName) && isReloadTable) {
+            boolean removeInstance = this.removeInstance(tableName);
+            log.debug("isReloadTable:{}", removeInstance);
+        }
+
+        //没有jvm缓存service时：重新生成service
+        if (!tableNameToServiceByTableMap.containsKey(tableName)) {
             Object o = this.generateEntity(apClassModelBuild);
             NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = this.newInstance(o);
             if (baseMapperObjectNoahService != null) {
-                tableNameBaseMapperMap.put(tableName, baseMapperObjectNoahService);
+                tableNameToServiceByTableMap.put(tableName, baseMapperObjectNoahService);
             }
         }
-        return tableNameBaseMapperMap.get(tableName);
+        return tableNameToServiceByTableMap.get(tableName);
     }
 
     @Override
@@ -91,25 +108,62 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
      */
     @Override
     public <T> NoahServiceImpl<BaseMapper<T>, T> newInstance(T t) {
+        Class<?> tClass = t.getClass();
+        TableName annotation = tClass.getAnnotation(TableName.class);
+        String tableName = Optional.ofNullable(annotation).map(TableName::value).orElse(StringUtil.camel2Underline(tClass.getSimpleName()));
+        tableName = tableName.toLowerCase();
         //jvm缓存是否存在
-        if (!entityBaseMapperMap.containsKey(t.getClass())) {
+        if (!tableNameToServiceByEntityMap.containsKey(tableName)) {
             //判断class缓存是否已经初始化过
             String beanName = StringUtils.uncapitalize(this.getServiceName(t.getClass()));
             Object bean = MpApplicationContextHelper.getBean(beanName);
             if (bean != null) {
-                entityBaseMapperMap.put(t.getClass(), bean);
+                tableNameToServiceByEntityMap.put(tableName, bean);
             } else {
                 Class<BaseMapper<T>> baseMapperClass = this.generateMapper(t);
                 try {
+                    tableNameToBaseMapperClassMap.put(tableName, baseMapperClass);
                     BaseMapper<T> tBaseMapper = this.proxyMpService.proxy(baseMapperClass);
-                    entityBaseMapperMap.put(t.getClass(), this.generateService(t, baseMapperClass, tBaseMapper));
+                    tableNameToServiceByEntityMap.put(tableName, this.generateService(t, baseMapperClass, tBaseMapper));
                 } catch (Exception e) {
                     log.error("proxy NoahServiceImpl failed : {}", e.getMessage());
                     e.printStackTrace();
                 }
             }
         }
-        return (NoahServiceImpl<BaseMapper<T>, T>) entityBaseMapperMap.get(t.getClass());
+        @SuppressWarnings("all")
+        NoahServiceImpl<BaseMapper<T>, T> noahServiceImpl = (NoahServiceImpl<BaseMapper<T>, T>) tableNameToServiceByEntityMap.get(tableName);
+        return noahServiceImpl;
+    }
+
+    @Override
+    public boolean removeAllInstance() {
+        for (Object o : tableNameToBaseMapperClassMap.values()) {
+            @SuppressWarnings("all")
+            Class<BaseMapper> baseMapperClass = (Class<BaseMapper>) o;
+            boolean isRemoveProxy = this.proxyMpService.removeProxy(baseMapperClass);
+            if (!isRemoveProxy) {
+                return false;
+            }
+        }
+        tableNameToServiceByTableMap.clear();
+        tableNameToServiceByEntityMap.clear();
+        tableReloadSet.clear();
+        tableNameToBaseMapperClassMap.clear();
+        return true;
+    }
+
+    @Override
+    public boolean removeInstance(String tableName) {
+        @SuppressWarnings("all")
+        Class<BaseMapper> baseMapperClass = tableNameToBaseMapperClassMap.get(tableName);
+        boolean isRemove = this.proxyMpService.removeProxy(baseMapperClass);
+        if (isRemove) {
+            tableNameToServiceByTableMap.remove(tableName);
+            tableNameToServiceByEntityMap.remove(tableName);
+            tableNameToBaseMapperClassMap.remove(tableName);
+        }
+        return isRemove;
     }
 
     /**
@@ -215,7 +269,7 @@ public class BaseMpBuildServiceImpl implements BaseMpBuildService {
                 .make();
         @SuppressWarnings("unchecked")
         Class<NoahServiceImpl<E, T>> serviceImplClass = (Class<NoahServiceImpl<E, T>>) this.generateClass(serviceImplMake, serviceImplPackageName);
-        log.debug("generateServiceImplClass:{}", servicePackageName);
+        log.debug("generateServiceImplClass:{}", serviceImplPackageName);
 
         //注入bean
         NoahServiceImpl<E, T> instance = null;

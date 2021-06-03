@@ -176,7 +176,9 @@ public class ClassUtils {
                         // 加载Class类
                         if (className.equals(fullClassName)) {
                             aClass = Class.forName(className, true, classLoader);
-                            log.info("ClassUtils-loading……[class={}]", className);
+                            //TODO 待开发热部署
+                            //aClass = MpClassLoader.findClassLoader(classPath, className);
+                            log.info("ClassUtils-loading……[class({})={}]", aClass.hashCode(), className);
                             break;
                         }
                     }

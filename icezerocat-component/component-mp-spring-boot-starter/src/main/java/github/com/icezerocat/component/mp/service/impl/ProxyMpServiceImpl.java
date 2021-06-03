@@ -5,6 +5,9 @@ import github.com.icezerocat.component.core.config.ProjectPathConfig;
 import github.com.icezerocat.component.db.builder.JavassistBuilder;
 import github.com.icezerocat.component.mp.service.ProxyMpService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.binding.MapperProxyFactory;
+import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperFactoryBean;
@@ -32,6 +35,9 @@ import org.springframework.util.PatternMatchUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Description: 代理mp服务实现类
@@ -60,8 +66,12 @@ public class ProxyMpServiceImpl implements ProxyMpService {
     private String[] autowireCandidatePatterns;
     private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
     private ScopeMetadataResolver scopeMetadataResolver = new AnnotationScopeMetadataResolver();
-
     private boolean lazyInitialization;
+
+    /**
+     * packageName映射BeanName
+     */
+    private static Map<String, String> packageNameToBeanNameMap = new HashMap<>();
 
     public ProxyMpServiceImpl(SqlSessionTemplate sqlSessionTemplate, DefaultListableBeanFactory defaultListableBeanFactory) {
         this.sqlSessionTemplate = sqlSessionTemplate;
@@ -87,6 +97,36 @@ public class ProxyMpServiceImpl implements ProxyMpService {
         return mapperFactoryBean.getObject();
     }
 
+    @Override
+    public <T extends BaseMapper> boolean removeProxy(Class<T> tClass) {
+        boolean isRemove = true;
+        try {
+            MapperRegistry mapperRegistry = this.sqlSessionTemplate.getConfiguration().getMapperRegistry();
+            if (mapperRegistry.hasMapper(tClass)) {
+                Field knownMappersField = mapperRegistry.getClass().getDeclaredField("knownMappers");
+                knownMappersField.setAccessible(true);
+                @SuppressWarnings("all")
+                Map<Class<?>, MapperProxyFactory<?>> knownMappers = (Map<Class<?>, MapperProxyFactory<?>>) knownMappersField.get(mapperRegistry);
+                knownMappers.remove(tClass);
+            }
+
+            String beanName = packageNameToBeanNameMap.get(tClass.getName());
+            if (StringUtils.isNotBlank(beanName) && this.defaultListableBeanFactory.containsBeanDefinition(beanName)) {
+                Field beanDefinitionMapField = this.defaultListableBeanFactory.getClass().getDeclaredField("beanDefinitionMap");
+                beanDefinitionMapField.setAccessible(true);
+                @SuppressWarnings("all")
+                Map<String, BeanDefinition> beanDefinitionMap = (Map<String, BeanDefinition>) beanDefinitionMapField.get(this.defaultListableBeanFactory);
+                beanDefinitionMap.remove(beanName);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            isRemove = false;
+            log.error("移除mp代理异常：{}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return isRemove;
+    }
+
     /**
      * 扫描包名获取bean定义类
      *
@@ -102,6 +142,8 @@ public class ProxyMpServiceImpl implements ProxyMpService {
         candidate.setScope(scopeMetadata.getScopeName());
         // 生成beanName
         String beanName = this.beanNameGenerator.generateBeanName(candidate, this.defaultListableBeanFactory);
+        //bean名缓存
+        packageNameToBeanNameMap.put(packageSearchPath, beanName);
 
         if (candidate instanceof AbstractBeanDefinition) {
             // 增加默认值，autowireCandidate

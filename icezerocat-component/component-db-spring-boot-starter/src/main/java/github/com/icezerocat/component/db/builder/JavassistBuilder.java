@@ -12,6 +12,8 @@ import javassist.bytecode.MethodInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 构建类class（分析、编辑和创建Java字节码）
@@ -29,6 +31,7 @@ public class JavassistBuilder {
      */
     public static final String PACKAGE_NAME = "github.com.icezerocat.ap.";
     public static final String DIRECTORY_NAME = "apTarget/classes";
+    public static final Map<String, Class> PACKAGE_NAME_TO_CLASS_MAP = new HashMap<>();
     private CtClass ctClass;
     /*private static StringBuilder fieldBuilder = new StringBuilder();*/
 
@@ -146,13 +149,11 @@ public class JavassistBuilder {
 
                 //输出class文件
                 this.ctClass.writeFile(classSysPath);
-                ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-                ClassLoader contextClassLoaderParent = contextClassLoader.getParent();
-                Class<? extends ClassLoader> contextClassLoaderParentClass = contextClassLoaderParent.getClass();
-                ClassLoader classLoader = contextClassLoaderParentClass.getClassLoader();
-                return ClassUtils.searchClassByClassName(
+                Class tClass = ClassUtils.searchClassByClassName(
                         classSysPath,
                         this.ctClass.getName(), Thread.currentThread().getContextClassLoader().getParent());
+                PACKAGE_NAME_TO_CLASS_MAP.put(tClass.getName(), tClass);
+                return tClass;
             } catch (IOException | CannotCompileException | ClassNotFoundException | NoSuchMethodException e) {
                 log.error("Javassist生成class出错：{}", e.getMessage());
                 e.printStackTrace();

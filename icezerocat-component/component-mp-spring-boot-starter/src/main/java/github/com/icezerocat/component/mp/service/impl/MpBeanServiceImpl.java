@@ -55,6 +55,7 @@ public class MpBeanServiceImpl implements MpBeanService {
     public boolean deleteByIds(MpModel mpModel) {
         @SuppressWarnings("all")
         NoahServiceImpl<BaseMapper<Object>, Object> baseMapperObjectNoahService = (NoahServiceImpl<BaseMapper<Object>, Object>) MpApplicationContextHelper.getBean(MpApplicationContextHelper.getBeanName(mpModel.getBeanName()));
+        assert baseMapperObjectNoahService != null;
         return baseMapperObjectNoahService.removeByIds(mpModel.getIds());
     }
 

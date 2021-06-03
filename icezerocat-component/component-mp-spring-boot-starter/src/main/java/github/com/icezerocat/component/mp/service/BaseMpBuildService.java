@@ -39,6 +39,21 @@ public interface BaseMpBuildService {
     <T> NoahServiceImpl<BaseMapper<T>, T> newInstance(T t);
 
     /**
+     * 移除所有实例
+     *
+     * @return true：成功；failed：失败
+     */
+    boolean removeAllInstance();
+
+    /**
+     * 根据表单名移除实例
+     *
+     * @param tableName 表单名
+     * @return true：成功；failed：失败
+     */
+    boolean removeInstance(String tableName);
+
+    /**
      * 获取保存路径
      *
      * @return 绝对路径
