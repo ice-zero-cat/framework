@@ -2,7 +2,6 @@ package github.com.icezerocat.component.db.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -13,10 +12,6 @@ import org.springframework.util.ObjectUtils;
  * @version 1.0
  */
 @Data
-@PropertySource(value = {
-        "classpath:bootstrap.properties", "classpath:bootstrap.yml",
-        "classpath:application.properties", "classpath:application.yml"},
-        ignoreResourceNotFound = true)
 public class ExcelDbConfig {
     /**
      * 数据库连接地址

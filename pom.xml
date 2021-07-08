@@ -16,9 +16,9 @@
     <description>Dao framework</description>
 
     <modules>
-        <module>icezerocat-component</module>
+        <!--<module>icezerocat-component</module>
         <module>jpa</module>
-        <module>jdbc-template</module>
+        <module>jdbc-template</module>-->
         <!--<module>admin</module>-->
         <!--<module>backup</module>-->
     </modules>
