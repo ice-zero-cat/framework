@@ -295,9 +295,11 @@ public class ExcelUtil {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
             List<List<Object>> lists = excelData.get("head");
             List<List<String>> headList = new ArrayList<>();
-            for (List<Object> objectList : lists) {
-                List<String> columnHeadList = objectList.stream().map(String::valueOf).collect(Collectors.toList());
-                headList.add(columnHeadList);
+            if (!CollectionUtils.isEmpty(lists)) {
+                for (List<Object> objectList : lists) {
+                    List<String> columnHeadList = objectList.stream().map(String::valueOf).collect(Collectors.toList());
+                    headList.add(columnHeadList);
+                }
             }
             // 这里需要设置不关闭流
             EasyExcel.write(response.getOutputStream()).head(headList).autoCloseStream(Boolean.FALSE).sheet(fileName)
