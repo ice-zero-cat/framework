@@ -5,16 +5,13 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.4</version>
     </parent>
     <artifactId>component-license-creator-spring-boot-starter</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>component-license-creator-spring-boot-starter</name>
     <description>系统软件证书生成模块，负责拉取服务器硬件信息和生成、下载lic证书文件</description>
-    <properties>
-        <java.version>1.8</java.version>
-        <component-license-core-spring-boot-starter.version>0.0.1</component-license-core-spring-boot-starter.version>
-    </properties>
+
     <dependencies>
         <!--引入Lic核心模块-->
         <dependency>

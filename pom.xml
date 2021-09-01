@@ -10,18 +10,19 @@
     </parent>
     <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>
 
-    <modules>
-        <!--<module>icezerocat-component</module>
-        <module>jpa</module>
-        <module>jdbc-template</module>-->
-        <!--<module>admin</module>-->
-        <!--<module>backup</module>-->
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>icezerocat-component</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <!--版本号管理-->
     <properties>
@@ -33,22 +34,42 @@
         <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+
         <!--多模块处理-->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
-        <!--模块依赖-->
+        <!--标准-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+
+        <!--模块依赖-->
         <jpa.version>0.0.3</jpa.version>
-        <reflectasm.version>1.11.9</reflectasm.version>
         <core.version>0.0.3</core.version>
-        <guava.version>29.0-jre</guava.version>
-        <fastjson.version>1.2.49</fastjson.version>
         <jdbc-template.version>0.0.3</jdbc-template.version>
         <backup.version>0.0.2</backup.version>
         <admin.version>0.0.2</admin.version>
         <icezerocat-mybatismp.version>0.0.2</icezerocat-mybatismp.version>
+        <component-common.version>0.0.3</component-common.version>
+        <component-core-spring-boot-starter.version>0.0.3</component-core-spring-boot-starter.version>
+        <component-license-core-spring-boot-starter.version>0.0.2</component-license-core-spring-boot-starter.version>
+        <component-db-spring-boot-starter.version>0.0.3</component-db-spring-boot-starter.version>
+
+        <!--maven依赖-->
+        <spring-jdbc.version>5.3.6</spring-jdbc.version>
+        <truelicense-core.version>1.33</truelicense-core.version>
+        <druid.version>1.1.22</druid.version>
+        <java.version>1.8</java.version>
+        <org.apache.commons.fileupload.version>1.2.2.LIFERAY-PATCHED-1</org.apache.commons.fileupload.version>
+        <easyexcel.version>LATEST</easyexcel.version>
+        <aspectjrt.verison>1.9.6</aspectjrt.verison>
+        <dom4j.version>2.1.3</dom4j.version>
+        <reflections.version>0.9.12</reflections.version>
+        <guava.version>29.0-jre</guava.version>
+        <fastjson.version>1.2.49</fastjson.version>
+        <reflectasm.version>1.11.9</reflectasm.version>
+        <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
+        <byte-buddy.version>1.10.14</byte-buddy.version>
     </properties>
 
     <!--全局依赖-->

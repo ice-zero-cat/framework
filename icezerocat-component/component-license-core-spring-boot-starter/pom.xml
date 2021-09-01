@@ -5,17 +5,13 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.4</version>
     </parent>
     <artifactId>component-license-core-spring-boot-starter</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>component-license-core-spring-boot-starter</name>
     <description>系统软件证书核心业务模块，提供lic相关模型类和通用api控制器</description>
-    <properties>
-        <java.version>1.8</java.version>
-        <truelicense-core.version>1.33</truelicense-core.version>
-        <component-core-spring-boot-starter.version>0.0.1</component-core-spring-boot-starter.version>
-    </properties>
+
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/de.schlichtherle.truelicense/truelicense-core -->

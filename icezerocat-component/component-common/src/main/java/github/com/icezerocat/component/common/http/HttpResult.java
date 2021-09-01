@@ -112,8 +112,16 @@ public class HttpResult<T> implements Serializable {
         return HttpResult.Build.<T>getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg(msg).complete();
     }
 
+    public static <T> HttpResult<T> error(String msg,T data) {
+        return HttpResult.Build.<T>getInstance().setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR).setMsg(msg).setData(data).complete();
+    }
+
     private static <T> HttpResult<T> error(int code, String msg) {
         return HttpResult.Build.<T>getInstance().setCode(code).setMsg(msg).complete();
+    }
+
+    public static <T> HttpResult<T> ok(String msg, T data) {
+        return HttpResult.Build.<T>getInstance().setMsg(msg).setData(data).complete();
     }
 
     public static <T> HttpResult<T> ok(String msg) {
