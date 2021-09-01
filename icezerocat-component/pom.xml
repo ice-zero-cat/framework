@@ -8,19 +8,30 @@
         <version>0.0.3</version>
     </parent>
     <artifactId>icezerocat-component</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
     <name>icezerocat-component</name>
     <description>组件</description>
     <packaging>pom</packaging>
 
-    <modules>
-        <!--工具类-->
-        <module>component-common</module>
-        <!--组件核心-->
-        <module>component-core-spring-boot-starter</module>
-        <!--db-->
-        <module>component-db-spring-boot-starter</module>
-        <!--mybatis-plus-->
-        <module>component-mp-spring-boot-starter</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>component</id>
+            <modules>
+                <!--工具类-->
+                <module>component-common</module>
+                <!--组件核心-->
+                <module>component-core-spring-boot-starter</module>
+                <!--db-->
+                <module>component-db-spring-boot-starter</module>
+                <!--mybatis-plus-->
+                <module>component-mp-spring-boot-starter</module>
+                <!--license-core-->
+                <module>component-license-core-spring-boot-starter</module>
+                <!--license-creator-->
+                <module>component-license-creator-spring-boot-starter</module>
+                <!--license-verify-->
+                <module>component-license-verify-spring-boot-starter</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

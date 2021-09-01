@@ -5,27 +5,22 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
-    <artifactId>component-core-spring-boot-starter</artifactId>
+    <artifactId>component-license-verify-spring-boot-starter</artifactId>
     <version>0.0.1</version>
-    <name>component-core-spring-boot-starter</name>
-    <description>组件核心</description>
+    <name>component-license-verify-spring-boot-starter</name>
+    <description>系统软件证书验证模块，负责用户自定义验证规则的实现，可扩展</description>
     <properties>
         <java.version>1.8</java.version>
-        <component-common.version>0.0.1</component-common.version>
+        <component-license-core-spring-boot-starter.version>0.0.1</component-license-core-spring-boot-starter.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <!--common模块-->
+        <!--引入Lic核心模块-->
         <dependency>
             <groupId>com.github.ice-zero-cat</groupId>
-            <artifactId>component-common</artifactId>
-            <version>${component-common.version}</version>
+            <artifactId>component-license-core-spring-boot-starter</artifactId>
+            <version>${component-license-core-spring-boot-starter.version}</version>
         </dependency>
     </dependencies>
 
