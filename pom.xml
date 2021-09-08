@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>
@@ -50,9 +50,9 @@
         <backup.version>0.0.2</backup.version>
         <admin.version>0.0.2</admin.version>
         <icezerocat-mybatismp.version>0.0.2</icezerocat-mybatismp.version>
-        <component-common.version>0.0.3</component-common.version>
-        <component-core-spring-boot-starter.version>0.0.3</component-core-spring-boot-starter.version>
-        <component-license-core-spring-boot-starter.version>0.0.2</component-license-core-spring-boot-starter.version>
+        <component-common.version>0.0.4</component-common.version>
+        <component-core-spring-boot-starter.version>0.0.4</component-core-spring-boot-starter.version>
+        <component-license-core-spring-boot-starter.version>0.0.3</component-license-core-spring-boot-starter.version>
         <component-db-spring-boot-starter.version>0.0.3</component-db-spring-boot-starter.version>
 
         <!--maven依赖-->

@@ -78,7 +78,12 @@ public class ParamInitHelper {
     public static LicenseParam initLicenseParam(LicenseVerifyParam param) {
         Preferences preferences = Preferences.userNodeForPackage(LicenseVerifyManager.class);
         CipherParam cipherParam = new DefaultCipherParam(param.getStorePass());
-        KeyStoreParam publicStoreParam = new DefaultKeyStoreParam(LicenseVerifyManager.class
+        // 参数 1,2 从哪个Class.getResource()获得密钥库;
+        // 参数 3 密钥库的别名;
+        // 参数 4 密钥库存储密码;
+        // 参数 5 密钥库密码
+        KeyStoreParam publicStoreParam = new DefaultKeyStoreParam(
+                LicenseVerifyManager.class
                 /* 公钥库存储路径 */
                 , param.getPublicKeysStorePath()
                 /* 公匙别名 */

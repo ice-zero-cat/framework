@@ -5,8 +5,7 @@ import com.github.icezerocat.component.license.core.model.LicenseResult;
 import com.github.icezerocat.component.license.core.model.LicenseVerifyManager;
 import com.github.icezerocat.component.license.verify.config.LicenseVerifyProperties;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
@@ -16,6 +15,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.MessageFormat;
 
 /**
  * Description: 项目启动时安装证书
@@ -26,7 +26,7 @@ import java.io.FileNotFoundException;
  * @version 1.0
  */
 @Component
-public class LicenseVerifyListener implements ApplicationListener<ContextRefreshedEvent> {
+public class LicenseVerifyListener implements CommandLineRunner {
 
     @Resource
     private LicenseVerifyProperties licenseVerifyProperties;
@@ -37,7 +37,7 @@ public class LicenseVerifyListener implements ApplicationListener<ContextRefresh
     private static String md5 = "";
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void run(String... args) {
         if (StringUtils.isNotEmpty(licenseVerifyProperties.getLicensePath())) {
             install();
             try {
@@ -99,12 +99,44 @@ public class LicenseVerifyListener implements ApplicationListener<ContextRefresh
             if (file.exists()) {
                 FileInputStream is = new FileInputStream(file);
                 byte[] data = new byte[is.available()];
-                is.read(data);
+                int fileSize = is.read(data);
+                LoggerHelper.debug(MessageFormat.format("获取文件大小：{0}", fileSize));
                 md5 = DigestUtils.md5DigestAsHex(data);
                 is.close();
             }
         } catch (FileNotFoundException ignored) {
         }
         return md5;
+    }
+
+    /**
+     * 比较许可证lic
+     *
+     * @param filePath 文件路径
+     * @return 比较结果
+     * @throws Exception io异常
+     */
+    public boolean equalsLicense(String filePath) throws Exception {
+        return md5.equals(getMd5(filePath));
+    }
+
+    /**
+     * 比较许可证lic
+     *
+     * @param file 文件
+     * @return 比较结果
+     * @throws Exception io异常
+     */
+    public boolean equalsLicense(File file) throws Exception {
+        String fileMd5 = "fileMd5";
+        if (file.exists()) {
+            FileInputStream is = new FileInputStream(file);
+            byte[] data = new byte[is.available()];
+            int fileSize = is.read(data);
+            LoggerHelper.debug(MessageFormat.format("获取文件大小：{0}", fileSize));
+            fileMd5 = DigestUtils.md5DigestAsHex(data);
+            is.close();
+        }
+        return md5.equals(fileMd5);
     }
 }

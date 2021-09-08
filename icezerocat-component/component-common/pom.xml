@@ -8,7 +8,7 @@
         <version>0.0.4</version>
     </parent>
     <artifactId>component-common</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>component-common</name>
     <description>组件普遍工具类</description>
 

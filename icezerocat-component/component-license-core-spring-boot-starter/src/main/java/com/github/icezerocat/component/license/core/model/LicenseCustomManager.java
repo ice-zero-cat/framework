@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.beans.XMLDecoder;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
@@ -101,6 +102,25 @@ public class LicenseCustomManager extends LicenseManager {
         Assert.notNull(content, "许可内容不能为空");
         this.validate(content);
         setCertificate(certificate);
+        return content;
+    }
+
+    /**
+     * <p>获取证书内容</p>
+     *
+     * @param licenseFile 证书lic文件
+     * @return LicenseContent 证书信息
+     * @throws Exception 默认异常
+     */
+    public synchronized LicenseContent getLicenseContent(final File licenseFile) throws Exception {
+        final byte[] key = loadLicenseKey(licenseFile);
+        LicenseNotary notary = getLicenseNotary();
+        GenericCertificate certificate = getPrivacyGuard().key2cert(key);
+        notary.verify(certificate);
+        final LicenseContent content = (LicenseContent) this.load(certificate.getEncoded());
+        /* 增加额外的自己的license校验方法，校验ip、mac、cpu序列号等 */
+        Assert.notNull(content, "许可内容不能为空");
+        this.validate(content);
         return content;
     }
 

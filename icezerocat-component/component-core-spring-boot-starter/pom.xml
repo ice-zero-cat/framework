@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5</version>
     </parent>
     <artifactId>component-core-spring-boot-starter</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>component-core-spring-boot-starter</name>
     <description>组件核心</description>
 

@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
  */
 public class LicenseVerifyManager {
 
+    public static LicenseCustomManager licenseManager;
+
     /**
      * <p>安装License证书</p>
      *
@@ -34,7 +36,7 @@ public class LicenseVerifyManager {
             /* 2、创建License证书管理器对象 */
 //          LicenseManager licenseManager =new LicenseManager(licenseParam);
             //走自定义的Lic管理
-            LicenseCustomManager licenseManager = new LicenseCustomManager(licenseParam);
+            licenseManager = new LicenseCustomManager(licenseParam);
             /* 3、获取要安装的证书文件 */
             File licenseFile = ResourceUtils.getFile(param.getLicensePath());
             /* 4、如果之前安装过证书，先卸载之前的证书 == 给null */

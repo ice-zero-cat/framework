@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5</version>
     </parent>
     <artifactId>component-license-core-spring-boot-starter</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>component-license-core-spring-boot-starter</name>
     <description>系统软件证书核心业务模块，提供lic相关模型类和通用api控制器</description>
 
