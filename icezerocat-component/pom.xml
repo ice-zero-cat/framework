@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.5</version>
+        <version>0.0.6</version>
     </parent>
     <artifactId>icezerocat-component</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <name>icezerocat-component</name>
     <description>组件</description>
     <packaging>pom</packaging>

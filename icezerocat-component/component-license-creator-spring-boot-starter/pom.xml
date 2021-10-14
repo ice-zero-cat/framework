@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.5</version>
+        <version>0.0.6</version>
     </parent>
     <artifactId>component-license-creator-spring-boot-starter</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.6</version>
     <name>component-license-creator-spring-boot-starter</name>
     <description>系统软件证书生成模块，负责拉取服务器硬件信息和生成、下载lic证书文件</description>
 
