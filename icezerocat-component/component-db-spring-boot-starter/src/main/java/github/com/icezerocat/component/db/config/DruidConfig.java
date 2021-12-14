@@ -1,16 +1,13 @@
 package github.com.icezerocat.component.db.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -77,7 +74,7 @@ public class DruidConfig {
      *
      * @return Servlet注册Bean
      */
-    @Bean
+    /*@Bean
     @ConditionalOnMissingBean
     public ServletRegistrationBean<Servlet> druidServlet() {
         ServletRegistrationBean<Servlet> servletRegistrationBean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
@@ -92,7 +89,7 @@ public class DruidConfig {
         servletRegistrationBean.addInitParameter("resetEnable", "true");
         return servletRegistrationBean;
 
-    }
+    }*/
 
     /**
      * 注册Filter信息, 监控拦截器(相当于Web Filter配置)

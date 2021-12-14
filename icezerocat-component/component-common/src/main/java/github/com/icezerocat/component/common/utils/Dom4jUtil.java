@@ -164,7 +164,7 @@ public class Dom4jUtil {
     }
 
     /**
-     * DOM4j的Document对象转为XML报文串
+     * DOM4j的Document对象转为XML报文串,自动把"<、>、&"这样的xml关键字转义
      *
      * @param document 文档
      * @param charset  字符集
@@ -178,6 +178,29 @@ public class Dom4jUtil {
         format.setEncoding(charset);
         // 写文件流
         XMLWriter xmlWriter = new XMLWriter(stringWriter, format);
+        try {
+            xmlWriter.write(document);
+            xmlWriter.flush();
+            xmlWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return stringWriter.toString();
+    }
+
+    /**
+     * DOM4j的Document对象转为XML报文串,不转义文本
+     *
+     * @param document 文档
+     * @return 经过解析后的xml字符串
+     */
+    public static String documentEscapeTextToString(Document document) {
+        StringWriter stringWriter = new StringWriter();
+        // 获得格式化输出流
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        // 写文件流
+        XMLWriter xmlWriter = new XMLWriter(stringWriter, format);
+        xmlWriter.setEscapeText(false);
         try {
             xmlWriter.write(document);
             xmlWriter.flush();
