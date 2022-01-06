@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -303,8 +304,11 @@ public class ProxyMpServiceImpl implements ProxyMpService {
         try {
             //自定义系统资源路径
             packageSearchPath = packageSearchPath.replaceAll("\\.", "/");
-            String path = ProjectPathConfig.PROJECT_PATH + JavassistBuilder.DIRECTORY_NAME + File.separator + packageSearchPath + ".class";
+            String projectPath = ProjectPathConfig.PROJECT_PATH.startsWith("/") ? "/" + ProjectPathConfig.PROJECT_PATH : ProjectPathConfig.PROJECT_PATH;
+            String path = projectPath + JavassistBuilder.DIRECTORY_NAME + File.separator + packageSearchPath + ".class";
+            log.debug("自定义系统资源路径:{}", path);
             resources = getResourcePatternResolver().getResources(path);
+            log.debug("during classpath scanning:{}", Arrays.toString(resources));
             for (org.springframework.core.io.Resource resource : resources) {
                 MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
                 ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
