@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.ice-zero-cat</groupId>
     <artifactId>framework</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <packaging>pom</packaging>
     <name>framework</name>
     <description>Dao framework</description>

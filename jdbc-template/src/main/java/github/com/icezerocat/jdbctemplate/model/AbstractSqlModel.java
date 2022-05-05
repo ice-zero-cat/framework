@@ -1,13 +1,6 @@
 package github.com.icezerocat.jdbctemplate.model;
 
-import github.com.icezerocat.component.common.builder.SearchBuild;
-import github.com.icezerocat.component.common.model.Param;
-import org.springframework.util.CollectionUtils;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Description: 抽象Sql模型
@@ -74,7 +67,7 @@ public abstract class AbstractSqlModel implements Serializable {
     /**
      * 搜索条件
      */
-    public List<Param> searchList = new ArrayList<>();
+//    public List<Param> searchList = new ArrayList<>();
 
     /**
      * 表单名
@@ -105,10 +98,10 @@ public abstract class AbstractSqlModel implements Serializable {
      * @param param 搜索参数
      * @return this
      */
-    public AbstractSqlModel addSearch(Param param) {
-        this.searchList.add(param);
-        return this;
-    }
+//    public AbstractSqlModel addSearch(Param param) {
+//        this.searchList.add(param);
+//        return this;
+//    }
 
     /**
      * 获取搜索语句
@@ -118,11 +111,11 @@ public abstract class AbstractSqlModel implements Serializable {
      *
      * @return sql
      */
-    public String getSearchSql() {
-        return Optional.ofNullable(this.searchList).filter(o -> !CollectionUtils.isEmpty(o))
-                .map(o -> "1 = 1" + SearchBuild.Builder.query().searchList(this.searchList).start().getHql())
-                .orElse("");
-    }
+//    public String getSearchSql() {
+//        return Optional.ofNullable(this.searchList).filter(o -> !CollectionUtils.isEmpty(o))
+//                .map(o -> "1 = 1" + SearchBuild.Builder.query().searchList(this.searchList).start().getHql())
+//                .orElse("");
+//    }
 
     /**
      * 获取字段字符串

@@ -6,9 +6,8 @@ import github.com.icezerocat.jdbctemplate.annotations.MultipleTableId;
 import github.com.icezerocat.jdbctemplate.annotations.TableField;
 import github.com.icezerocat.jdbctemplate.annotations.TableId;
 import github.com.icezerocat.jdbctemplate.model.AbstractSqlModel;
-import github.com.icezerocat.jdbctemplate.model.SqlDataModel;
-import github.com.icezerocat.jdbctemplate.model.InsertSqlModel;
 import github.com.icezerocat.jdbctemplate.model.PrimaryKeyInfo;
+import github.com.icezerocat.jdbctemplate.model.SqlDataModel;
 import github.com.icezerocat.jdbctemplate.service.BaseJdbcTemplate;
 import github.com.icezerocat.jdbctemplate.utils.DaoUtil;
 import github.com.icezerocat.jdbctemplate.utils.StringUtil;
@@ -16,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -27,12 +24,8 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * ProjectName: [framework]
@@ -332,7 +325,8 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
         List<Object[]> updateValueList = new ArrayList<>();
         TableCheck tableCheck = null;
         for (T t : tCollection) {
-            tableCheck = this.containsKey(t.getClass(), t);
+            // TODO 主键获取
+            tableCheck = null;//this.containsKey(t.getClass(), t);
             if (!tableCheck.isContainsKey()) {
                 insertList.add(t);
             } else {
@@ -360,14 +354,24 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
         return count;
     }
 
+    @Override
+    public <T> Object[] getUpdateValue(T t, TableCheck tableCheck) {
+        return new Object[0];
+    }
+
+    @Override
+    public <T> String getUpdateSql(Class<T> tClass, TableCheck tableCheck) {
+        return null;
+    }
+
     //TODO 根据主键更新
     public <T> Object[] updateByPk(List<T> tList) {
         SqlDataModel sqlDataModel = this.constructSqlInfo(tList, AbstractSqlModel.updateSqlModel(), null);
-        this.update()
+//        this.update()
+        return null;
     }
 
     //TODO 根据逐渐查询语句
-    @Override
     public <T> String getSelectSql(Class<T> tClass, TableCheck tableCheck) {
         StringBuilder sql = new StringBuilder().append("SELECT").append(" * ").append(" FROM ").append(DaoUtil.getTableName(tClass));
         int index = 0;
@@ -414,14 +418,15 @@ public class BaseJdbcTemplateImpl extends JdbcTemplate implements BaseJdbcTempla
      * 插入并获取主键
      */
     public <T> int insertAndGetId(T t) {
-        final String sql = this.getInsertSql(t.getClass());
+        /*final String sql = this.getInsertSql(t.getClass());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             this.getInsertValue(t, v -> ps.setObject());
             return ps;
         }, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).intValue();
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();*/
+        return -1;
     }
 
     /**

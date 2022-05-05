@@ -35,7 +35,7 @@ public class WebServiceUtil {
      *
      * @param webServiceURL WebService接口地址
      * @param soapXml       消息体
-     * @return
+     * @return json结果
      */
     public static String doPostSoap(String webServiceURL, String soapXml) {
 //        BufferedReader reader = null;

@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.7</version>
     </parent>
     <artifactId>jpa</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.7</version>
     <name>jpa</name>
     <description>jpa dao</description>
 

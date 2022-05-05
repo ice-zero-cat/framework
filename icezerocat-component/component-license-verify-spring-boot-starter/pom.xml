@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>icezerocat-component</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.7</version>
     </parent>
     <artifactId>component-license-verify-spring-boot-starter</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <name>component-license-verify-spring-boot-starter</name>
     <description>系统软件证书验证模块，负责用户自定义验证规则的实现，可扩展</description>
 

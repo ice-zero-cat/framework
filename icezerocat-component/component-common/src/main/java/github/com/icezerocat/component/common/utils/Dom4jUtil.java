@@ -51,6 +51,12 @@ public class Dom4jUtil {
         return document;
     }
 
+    /**
+     * 获取文档
+     * @param path 路径
+     *
+     * @return 文档
+     */
     public static Document getDocument(String path) {
         if (null == path) {
             return null;
@@ -164,7 +170,7 @@ public class Dom4jUtil {
     }
 
     /**
-     * DOM4j的Document对象转为XML报文串,自动把"<、>、&"这样的xml关键字转义
+     * DOM4j的Document对象转为XML报文串,关键符号转义
      *
      * @param document 文档
      * @param charset  字符集

@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.github.ice-zero-cat</groupId>
         <artifactId>framework</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.7</version>
     </parent>
     <artifactId>jdbc-template</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.7</version>
     <name>jdbc-template</name>
     <description>jdbc-template数据库操作模块</description>
 
