@@ -1,9 +1,8 @@
-package github.com.icezerocat.component.common.utils;
+package github.com.icezerocat.jdbctemplate.utils;
 
 
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +55,7 @@ public class StringUtil {
     }
 
     /**
-     * 下划线，转换为驼峰式（APP_ID = APPID）
+     * 下划线，转换为驼峰式
      *
      * @param underscoreName 下划线命名
      * @return 驼峰法命名
@@ -116,7 +115,7 @@ public class StringUtil {
     }
 
     /**
-     * 下划线转驼峰法-其他字符不变(APP_ID=appId)
+     * 下划线转驼峰法-其他字符不变
      *
      * @param line 源字符串
      * @return 转换后的字符串
@@ -141,7 +140,7 @@ public class StringUtil {
     }
 
     /**
-     * 驼峰法转下划线-修改其他字符为小写(APP_ID=a_p_p_i_d)
+     * 驼峰法转下划线-修改其他字符为小写
      *
      * @param line 源字符串
      * @return 转换后的字符串
@@ -159,16 +158,5 @@ public class StringUtil {
             sb.append(matcher.end() == line.length() ? "" : "_");
         }
         return sb.toString();
-    }
-
-    /**
-     * 去除空格
-     * 可以匹配空格、制表符、换页符等空白字符的其中任意一个
-     *
-     * @param string 字符串
-     * @return 去除后结果
-     */
-    public static String replaceTrim(@NotNull String string) {
-        return string.replaceAll("\\s*", "");
     }
 }

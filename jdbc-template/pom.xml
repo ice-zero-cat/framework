@@ -8,20 +8,23 @@
         <version>0.0.1</version>
     </parent>
     <artifactId>jdbc-template</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>jdbc-template</name>
     <description>jdbc-template数据库操作模块</description>
 
     <dependencies>
-        <!--jpa-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
         </dependency>
-        <!-- core -->
         <dependency>
-            <groupId>github.com.ice-zero-cat</groupId>
-            <artifactId>core</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ice-zero-cat</groupId>
+            <artifactId>component-common</artifactId>
+            <version>0.0.6</version>
         </dependency>
     </dependencies>
 

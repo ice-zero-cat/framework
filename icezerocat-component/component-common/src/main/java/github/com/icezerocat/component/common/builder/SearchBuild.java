@@ -63,6 +63,15 @@ public class SearchBuild {
         private List<Object> list = new ArrayList<>();
         private StringBuilder hql = new StringBuilder();
 
+        /**
+         * 构建查询
+         *
+         * @return 构建者
+         */
+        public static Builder query() {
+            return new Builder();
+        }
+
         public Builder() {
 
         }

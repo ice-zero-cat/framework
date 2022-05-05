@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,13 @@ import java.util.Objects;
 @Slf4j
 public class UploadUtil {
 
+    /**
+     * 上传文件
+     *
+     * @param dataPath      文件路径
+     * @param multipartFile 文件
+     * @return 保存结果
+     */
     public static JSONObject save(String dataPath, MultipartFile multipartFile) {
         JSONObject jsonObject = new JSONObject();
         String msg = "上传文件成功";
@@ -26,7 +34,7 @@ public class UploadUtil {
             result = false;
         } else {
             if (dataPath.indexOf("/") != 0) {
-                dataPath =  "/" + dataPath;
+                dataPath = "/" + dataPath;
             }
             if (!"/".equals(dataPath.substring(dataPath.length() - 1))) {
                 dataPath += "/";
@@ -71,5 +79,32 @@ public class UploadUtil {
      */
     public static String getWebPath() {
         return System.getProperty("user.dir").replaceAll("\\\\", "/") + "/";
+    }
+
+
+    /**
+     * 下载resource根目录下的文件
+     *
+     * @param fileName 文件名
+     * @param response 响应
+     * @throws IOException io异常
+     */
+    public static void downloadExcel(String fileName, HttpServletResponse response) throws IOException {
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        response.setHeader("Pragma", "public");
+        response.setHeader("Cache-Control", "no-store");
+        response.addHeader("Cache-Control", "max-age=0");
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        if (inputStream != null) {
+            response.addHeader("Content-Length", String.valueOf(inputStream.available()));
+            OutputStream os = response.getOutputStream();
+            byte[] bis = new byte[1024];
+            while (-1 != inputStream.read(bis)) {
+                os.write(bis);
+            }
+        }
     }
 }

@@ -1,10 +1,13 @@
 package github.com.icezerocat.jdbctemplate.service;
 
-import com.sun.istack.NotNull;
-import github.com.icezerocat.core.model.Param;
+
+import github.com.icezerocat.component.common.model.Param;
+import github.com.icezerocat.jdbctemplate.service.impl.BaseJdbcTemplateImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcOperations;
 
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,6 +32,14 @@ public interface BaseJdbcTemplate extends JdbcOperations {
     long delete(Class<?> tClass, @NotNull Long id);
 
     /**
+     * 删除表数据
+     *
+     * @param tClass 字节码
+     * @return 删除结果
+     */
+    boolean deleteAll(Class<?> tClass);
+
+    /**
      * 删除数据
      *
      * @param tClass 字节码
@@ -36,6 +47,7 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @return 返回删除多少条
      */
     long delete(Class<?> tClass, Iterable<Long> ids);
+
 
     /**
      * 通过id获取数据
@@ -120,10 +132,11 @@ public interface BaseJdbcTemplate extends JdbcOperations {
     /**
      * 插入对象
      *
-     * @param tClass 类字节码
+     * @param t   对象
+     * @param <T> 泛型
      * @return 插入结果
      */
-    int[] insert(Class<?> tClass);
+    <T> int[] insert(T t);
 
     /**
      * 插入list集合对象
@@ -133,4 +146,53 @@ public interface BaseJdbcTemplate extends JdbcOperations {
      * @return 插入结果
      */
     <T> int[] insert(List<T> listT);
+
+    /**
+     * 批量保存或更新
+     *
+     * @param tCollection 对象集合
+     * @param <T>         泛型对象
+     * @return 保存和更新的总数
+     */
+    <T> int saveOrUpdateBatch(Collection<T> tCollection);
+
+    /**
+     * 获取更新数据的value
+     *
+     * @param t          实体类
+     * @param tableCheck 检查表单主键对象
+     * @param <T>        泛型
+     * @return value数组
+     */
+    <T> Object[] getUpdateValue(T t, BaseJdbcTemplateImpl.TableCheck tableCheck);
+
+    /**
+     * 获取更新sql语句
+     *
+     * @param tClass     对象对应的字节码类
+     * @param tableCheck 检查表单主键对象
+     * @param <T>        泛型
+     * @return insert-sql
+     */
+    <T> String getUpdateSql(Class<T> tClass, BaseJdbcTemplateImpl.TableCheck tableCheck);
+
+    /**
+     * 生成删除语句
+     *
+     * @param tClass     实体类
+     * @param tableCheck 表单检查
+     * @param <T>        泛型
+     * @return 获取删除sql
+     */
+    <T> String getDeleteSql(Class<T> tClass, BaseJdbcTemplateImpl.TableCheck tableCheck);
+
+    /**
+     * 获取删除语句的value
+     *
+     * @param t          获取删除的值
+     * @param tableCheck 表单检查
+     * @param <T>        泛型
+     * @return 获取删除value值
+     */
+    <T> Object[] getDeleteValue(T t, BaseJdbcTemplateImpl.TableCheck tableCheck);
 }
